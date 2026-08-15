@@ -1,0 +1,18 @@
+# Build outputs
+/build/
+/out/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# VS Code
+.vscode/
+
+# CMake
+CMakeUserPresets.json
+
+# OS
+.DS_Store
+Thumbs.db
