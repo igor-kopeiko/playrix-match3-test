@@ -50,26 +50,58 @@ void Board::set(Position pos, Tile tile) {
     set(pos.x, pos.y, tile);
 }
 
+bool Board::contains(std::size_t x, std::size_t y) const {
+    //проверяем принадлежность
+    if (x >= width_ || y >= height_) {
+        return false;
+    }
+    return true;
+}
+
+bool Board::contains(Position pos) const {
+    return contains(pos.x, pos.y);
+}
+
+
+
+
+
 bool Board::are_neighbours(Position first, Position second) const noexcept {
     //проверяем что это соседние клетки
+    if (!contains(first)) {
+        return false;
+    }
+    if (!contains(second)) {
+        return false;
+    }
+
     //по горизонтали
     if (first.x == second.x + 1 || first.x + 1 == second.x) {
-        //по вертикали
-        if (first.y == second.y + 1 || first.y + 1 == second.y) {
+        if (first.y == second.y) {
             return true;
         }
     }
+
+    //по вертикали
+    if (first.y == second.y + 1 || first.y + 1 == second.y) {
+        if (first.x == second.x) {
+            return true;
+        }
+    }
+
     return false;
 }
 
 bool Board::try_swap(Position first, Position second) {
+
+
     if (!are_neighbours(first, second)) {
         return false;
     }
     else {
-        Tile temp = this->at(first);
-        this->set(first, this->at(second));
-        this->set(second, temp);
+        Tile temp = at(first);
+        set(first, at(second));
+        set(second, temp);
         return true;
     }
 }

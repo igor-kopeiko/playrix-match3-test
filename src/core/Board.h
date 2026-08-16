@@ -21,8 +21,13 @@ public:
     void set(std::size_t x, std::size_t y, Tile tile);
     void set(Position pos, Tile tile);
 
+    bool contains(std::size_t x, std::size_t y) const;
+    bool contains(Position pos) const;
+
     bool are_neighbours(Position first, Position second) const noexcept;
     bool try_swap(Position first, Position second);
+
+    
 
 private:
     [[nodiscard]] std::size_t index(std::size_t x, std::size_t y) const;
