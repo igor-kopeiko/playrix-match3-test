@@ -1,6 +1,7 @@
 #pragma once
 
 #include "core/Tile.h"
+#include "core/Position.h"
 
 #include <cstddef>
 #include <cstdint>
@@ -16,6 +17,12 @@ public:
     [[nodiscard]] std::size_t width() const noexcept { return width_; }
     [[nodiscard]] std::size_t height() const noexcept { return height_; }
     [[nodiscard]] Tile at(std::size_t x, std::size_t y) const;
+    [[nodiscard]] Tile at(Position pos) const;
+    void set(std::size_t x, std::size_t y, Tile tile);
+    void set(Position pos, Tile tile);
+
+    bool are_neighbours(Position first, Position second) const noexcept;
+    bool try_swap(Position first, Position second);
 
 private:
     [[nodiscard]] std::size_t index(std::size_t x, std::size_t y) const;
