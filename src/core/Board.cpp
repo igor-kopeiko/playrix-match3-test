@@ -377,6 +377,35 @@ void Board::delete_cells(std::vector<Position>& cells_to_delete) {
     }
 }
 
+void Board::collapse_cells() {
+    for (int x = 0; x < width_; x++) {
+        std::size_t current_empty_y = 0;
+        bool found_empty = false;
+
+        for (int y = (int)height_ - 1; y >= 0; y--) {
+            Tile curr_cell = at(x, y);
+            if (curr_cell == Tile::Default && !found_empty) {
+                current_empty_y = y;
+                found_empty = true;
+            }
+            else {
+                if (found_empty) {
+                    set(x, current_empty_y, curr_cell);
+                    set(x, y, Tile::Default);
+                    //ищем следующую пустую клетку
+                    for (int empty_y = current_empty_y; empty_y >= 0;  empty_y--) {
+                        if (at(x, empty_y) == Tile::Default) {
+                            current_empty_y = empty_y;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+}
+
 
 
 } // namespace match3

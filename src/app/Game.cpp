@@ -68,6 +68,9 @@ void Game::update() {
                     //найдем клетки которые входят в матч
                     std::vector<Position> cells_in_match = board_.find_matches();
                     board_.delete_cells(cells_in_match);
+
+                    //сдвинем остальные клетки
+                    board_.collapse_cells();
                 }
                 //board_.try_swap(first_selected_cell.value(), second_selected_cell.value());
                 first_selected_cell = std::nullopt;

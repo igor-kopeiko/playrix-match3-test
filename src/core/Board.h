@@ -35,6 +35,8 @@ public:
     bool try_match_swap(Position first, Position second);
     
     void delete_cells(std::vector<Position>& cells_to_delete);
+    void collapse_cells();
+    void fill_empty_cells();
     
 
 private:
