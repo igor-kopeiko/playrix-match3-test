@@ -44,17 +44,69 @@ void Game::tick() {
 }
 
 void Game::update() {
-    // Input and animation state will live here.
-    // 
-    //std::vector<Position> matched_cells = board_.find_matches();
-    //for (auto& elem : matched_cells) {
-    //    std::cout << " [" << elem.x << " " << elem.y << "] ";
+    switch (current_game_state) {
+    case GameState::Idle:
+        update_idle();
+        break;
+
+    case GameState::Swapping:
+        update_swapping();
+        break;
+        
+    case GameState::BackSwapping:
+        break;
+
+    case GameState::Removing:
+        break;
+
+    case GameState::Falling:
+        break;
+
+    case GameState::Filling:
+        break;
+    }
+
+    //обработка нажатий мыши
+    //if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+    //    Vector2 mouse = GetMousePosition();
+
+    //    // здесь обрабатываем клик
+    //    const std::optional<Position> cell = get_chosen_cell(mouse);
+    //    if (cell) {
+    //        if (first_selected_cell) { //если первую клетку уже присвоили
+    //            std::optional<Position> second_selected_cell = cell;
+    //            if (board_.try_match_swap(first_selected_cell.value(), second_selected_cell.value())) {
+    //                //найдем клетки которые входят в матч
+    //                std::vector<Position> cells_in_match;
+    //                while(1){
+    //                    cells_in_match = board_.find_matches();
+    //                    if (cells_in_match.empty()) {
+    //                        break;
+    //                    }
+
+    //                    board_.delete_cells(cells_in_match);
+
+    //                    //сдвинем остальные клетки
+    //                    board_.collapse_cells();
+
+    //                    //заполним пустоты
+    //                    board_.fill_empty_cells();
+    //                }
+
+    //                
+    //            }
+    //            //board_.try_swap(first_selected_cell.value(), second_selected_cell.value());
+    //            first_selected_cell = std::nullopt;
+    //        }
+    //        else {
+    //            //присваиваем первую клетку
+    //            first_selected_cell = cell;
+    //        }
+    //    }
     //}
-    //std::cout << std::endl;
-    // 
-    
-    //std::cout << "possible = " << board_.has_possible_moves() << std::endl;
-    
+}
+
+void Game::update_idle() {
     //обработка нажатий мыши
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
         Vector2 mouse = GetMousePosition();
@@ -63,29 +115,13 @@ void Game::update() {
         const std::optional<Position> cell = get_chosen_cell(mouse);
         if (cell) {
             if (first_selected_cell) { //если первую клетку уже присвоили
-                std::optional<Position> second_selected_cell = cell;
-                if (board_.try_match_swap(first_selected_cell.value(), second_selected_cell.value())) {
-                    //найдем клетки которые входят в матч
-                    std::vector<Position> cells_in_match;
-                    while(1){
-                        cells_in_match.clear();
-                        cells_in_match = board_.find_matches();
-                        if (cells_in_match.empty()) {
-                            break;
-                        }
-
-                        board_.delete_cells(cells_in_match);
-
-                        //сдвинем остальные клетки
-                        board_.collapse_cells();
-
-                        //заполним пустоты
-                        board_.fill_empty_cells();
-                    }
-
-                    
+                if (board_.are_neighbours(first_selected_cell.value(), cell.value())) {
+                    //игра покажет анимацию смены, даже если смену делать нельзя
+                    current_game_state = GameState::Swapping; //выставляем состояние
+                    swapping_poses.first = first_selected_cell.value();//записываем позиции для анимации
+                    swapping_poses.second = cell.value();
+                    calculate_swapping_shift();
                 }
-                //board_.try_swap(first_selected_cell.value(), second_selected_cell.value());
                 first_selected_cell = std::nullopt;
             }
             else {
@@ -96,6 +132,26 @@ void Game::update() {
     }
 }
 
+void Game::update_swapping() {
+    float time_to_animate = 1.0; //время сколько длится анимация
+
+    animation_timer += GetFrameTime();
+
+    if (animation_timer > time_to_animate) {
+        time_to_animate = 0.0; //сброс таймера
+        //проверяем законной ли была смена
+        if (board_.try_match_swap(swapping_poses.first, swapping_poses.second)) {
+            current_game_state = GameState::Removing;
+        }
+        else {
+            //значит нужно вернуть все обратно
+            current_game_state = GameState::BackSwapping;
+        }
+    }
+}
+
+//==========================================================
+
 void Game::draw() const {
     BeginDrawing();
     //черный цвет
@@ -105,32 +161,82 @@ void Game::draw() const {
 
     for (std::size_t y = 0; y < board_.height(); ++y) {
         for (std::size_t x = 0; x < board_.width(); ++x) {
-            const int px = kBoardOffsetX + static_cast<int>(x) * kCellSize;
-            const int py = kBoardOffsetY + static_cast<int>(y) * kCellSize;
-            const Rectangle cell{
-                static_cast<float>(px + space_near_cell),
-                static_cast<float>(py + space_near_cell),
-                static_cast<float>(kCellSize - space_near_cell*2),
-                static_cast<float>(kCellSize - space_near_cell*2),
-            };
-            if (first_selected_cell) { //если выбрана клетка
-                if (first_selected_cell->x == x && first_selected_cell->y == y) { //если это текущая отрисовка
-                    const Rectangle border_cell{
-                        static_cast<float>(px),
-                        static_cast<float>(py),
-                        static_cast<float>(kCellSize),
-                        static_cast<float>(kCellSize),
-                    };
-                    
-                    DrawRectangleRounded(border_cell, 0.28F, 8, WHITE);
+
+
+            switch (current_game_state) {
+            case GameState::Idle:
+                //обычный показ доски
+                draw_regular_cell(x, y);
+                break;
+
+            case GameState::Swapping:
+                if (swapping_poses.first.x == x && swapping_poses.first.y == y) {
+                    draw_swapping_cell(x, y);
                 }
+                else if (swapping_poses.second.x == x && swapping_poses.second.y == y) {
+                    draw_swapping_cell(x, y);
+                }
+                else {
+                    draw_regular_cell(x, y);
+                }
+                break;
             }
-            
-            DrawRectangleRounded(cell, 0.28F, 8, colorForTile(board_.at(x, y)));
+
+
+
         }
     }
 
     EndDrawing();
+}
+
+void Game::draw_regular_cell(std::size_t x, std::size_t y) const {
+    const int px = kBoardOffsetX + static_cast<int>(x) * kCellSize;
+    const int py = kBoardOffsetY + static_cast<int>(y) * kCellSize;
+
+    const Rectangle cell{
+        static_cast<float>(px + space_near_cell),
+        static_cast<float>(py + space_near_cell),
+        static_cast<float>(kCellSize - space_near_cell * 2),
+        static_cast<float>(kCellSize - space_near_cell * 2),
+    };
+    if (first_selected_cell) { //если выбрана клетка
+        if (first_selected_cell->x == x && first_selected_cell->y == y) { //если это текущая отрисовка
+            const Rectangle border_cell{
+                static_cast<float>(px),
+                static_cast<float>(py),
+                static_cast<float>(kCellSize),
+                static_cast<float>(kCellSize),
+            };
+
+            DrawRectangleRounded(border_cell, 0.28F, 8, WHITE);
+        }
+    }
+    DrawRectangleRounded(cell, 0.28F, 8, colorForTile(board_.at(x, y)));
+}
+
+void Game::draw_swapping_cell(std::size_t x, std::size_t y) const {
+    const int px = kBoardOffsetX + static_cast<int>(x) * kCellSize;
+    const int py = kBoardOffsetY + static_cast<int>(y) * kCellSize;
+
+    int shift_px = 0;
+    int shift_py = 0;
+    if (x == swapping_poses.first.x && y == swapping_poses.first.y) { //если это первая клетка
+        shift_px = animation_timer * (float)kCellSize * swapping_shift.x;
+        shift_py = animation_timer * (float)kCellSize * swapping_shift.y;
+    }
+    else {
+        //здесь добавляем -1 потому что в противоположную сторону
+        shift_px = animation_timer * (float)kCellSize * swapping_shift.x * -1;
+        shift_py = animation_timer * (float)kCellSize * swapping_shift.y * -1;
+    }
+    const Rectangle cell{
+        static_cast<float>(px + space_near_cell + shift_px),
+        static_cast<float>(py + space_near_cell + shift_py),
+        static_cast<float>(kCellSize - space_near_cell * 2),
+        static_cast<float>(kCellSize - space_near_cell * 2),
+    };
+    DrawRectangleRounded(cell, 0.28F, 8, colorForTile(board_.at(x, y)));
 }
 
 
@@ -159,6 +265,30 @@ std::optional<Position> Game::get_chosen_cell(Vector2 mouse) {
     std::cout << "Clicked on border: x = " << x << " y = " << y << std::endl;
 
     return Position{ x, y };
+}
+
+void Game::calculate_swapping_shift() {
+    if (swapping_poses.first.x == swapping_poses.second.x) {
+        if (swapping_poses.first.y > swapping_poses.second.y) {
+            //значит сдвиг первого вверх
+            swapping_shift = {0, -1};
+        }
+        else {
+            //сдвиг первого вниз
+            swapping_shift = {0, 1};
+        }
+    }
+    else {
+        if (swapping_poses.first.x > swapping_poses.second.x) {
+            //сдвиг первого влево
+            swapping_shift = { -1, 0 };
+        }
+        else {
+            //сдвиг первого вправо
+            swapping_shift = { 1, 0 };
+        }
+    }
+    
 }
 
 

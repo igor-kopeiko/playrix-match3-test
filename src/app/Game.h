@@ -10,6 +10,25 @@
 
 namespace match3 {
 
+enum class GameState {
+    Idle,       // ждём действий игрока
+    Swapping,   // смена
+    BackSwapping,//если swap недопустим
+    Removing,   // удаляем совпавшие фишки
+    Falling,    // фишки падают вниз
+    Filling     // появляются новые фишки
+};
+
+struct Swapping_shift {
+    int x;
+    int y;
+};
+
+struct Swapping_poses {
+    Position first;
+    Position second;
+};
+
 //struct LevelConfig {
 //    std::size_t width;
 //    std::size_t height;
@@ -22,7 +41,19 @@ public:
 
 private:
     void update();
+
+    void update_idle();
+    void update_swapping();
+    void update_removing();
+    void update_falling();
+    void update_filling();
+
+
+
+
     void draw() const;
+    void draw_regular_cell(std::size_t x, std::size_t y) const;
+    void draw_swapping_cell(std::size_t x, std::size_t y) const;
 
     const int kBoardOffsetX; //отступ первой ячейки от края
     const int kBoardOffsetY;
@@ -36,10 +67,22 @@ private:
     //вернет индексы выбранной клетки
     std::optional<Position> get_chosen_cell(Vector2 mouse);
 
+    //определяет направление движения swapping
+    void calculate_swapping_shift();
+    
+
     //LevelConfig level_{8, 8}; //пока оставим дефолт
     Board board_{ cell_amount_x, cell_amount_y, 42 };
     
     std::optional<Position> first_selected_cell = std::nullopt;
+
+    GameState current_game_state = GameState::Idle;
+
+    Swapping_poses swapping_poses{ {},{} };
+
+    float animation_timer = 0.0;
+
+    Swapping_shift swapping_shift{};
 
 };
 
