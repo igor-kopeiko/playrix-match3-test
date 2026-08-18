@@ -12,6 +12,7 @@ namespace {
 
 Color colorForTile(const Tile tile) {
     constexpr std::array<Color, static_cast<std::size_t>(Tile::Count)> colors{
+        Color{24, 27, 36, 255}, //default
         Color{230, 70, 70, 255},
         Color{80, 190, 100, 255},
         Color{70, 120, 235, 255},

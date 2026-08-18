@@ -35,7 +35,7 @@ public:
     
 
 private:
-    //std::vector<Position> find_matches(std::string side) const;
+    void create_board();
     std::vector<Position> breadth_first_search(Position start, Tile wish_tile) const; //поиск в ширину
     void bf_search_check_cell(
         std::unordered_set<Position, PositionHash>& already_checked,

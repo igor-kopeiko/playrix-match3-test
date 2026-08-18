@@ -12,7 +12,43 @@ Board::Board(const std::size_t width, const std::size_t height, const std::uint3
     }
 
     for (auto& tile : tiles_) {
-        tile = randomTile();
+        tile = Tile::Default;//randomTile(); //Tile::Default;
+    }
+
+    create_board();
+}
+
+void Board::create_board() {
+    //создаем доску без совпадений
+    for (std::size_t y = 0; y < height_; y++) {
+        int counter = 1;
+        Tile last_tile = Tile::Default; //значение по умолчанию
+        for (std::size_t x = 0; x < width_; x++) {
+            while(1){
+                //генерируем
+                Tile new_tile = randomTile();
+                //проверяем соседей слева
+                if (x > 1) {
+                    if (at(x - 1, y) == new_tile) { 
+                        if (at(x - 2, y) == new_tile) {
+                            continue;
+                        }
+                    }
+                }
+                //проверяем соседей сверху
+                if (y > 1) {
+                    if (at(x, y - 1) == new_tile) {
+                        if (at(x, y - 2) == new_tile) {
+                            continue;
+                        }
+                    }
+                }
+                set(x, y, new_tile);
+                break;
+            }
+
+            
+        }
     }
 }
 
@@ -32,7 +68,7 @@ std::size_t Board::index(const std::size_t x, const std::size_t y) const {
 }
 
 Tile Board::randomTile() {
-    std::uniform_int_distribution<int> distribution(0, static_cast<int>(Tile::Count) - 1);
+    std::uniform_int_distribution<int> distribution(1, static_cast<int>(Tile::Count) - 1);
     return static_cast<Tile>(distribution(rng_));
 }
 

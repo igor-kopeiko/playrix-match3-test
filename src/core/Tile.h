@@ -5,14 +5,14 @@
 namespace match3 {
 
 enum class Tile : std::uint8_t {
+    Default,
     Red,
     Green,
     Blue,
     Yellow,
     Purple,
     Orange,
-    Count,
-    Default
+    Count
 };
 
 } // namespace match3
