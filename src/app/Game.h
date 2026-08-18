@@ -6,10 +6,10 @@
 
 namespace match3 {
 
-struct LevelConfig {
-    std::size_t width;
-    std::size_t height;
-};
+//struct LevelConfig {
+//    std::size_t width;
+//    std::size_t height;
+//};
 
 class Game {
 public:

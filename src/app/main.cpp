@@ -23,6 +23,7 @@ bool validate_settings(int cell_amount_x, int cell_amount_y, int cell_size, int 
     if (space_near_cell < 0 || space_near_cell > 8) {
         return false;
     }
+    return true;
 }
 
 match3::Game* g_game = nullptr;
