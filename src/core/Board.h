@@ -30,12 +30,14 @@ public:
     bool try_swap(Position first, Position second);
 
     std::vector<Position> find_matches() const;
+    bool has_possible_moves();
     
 
     
 
 private:
     void create_board();
+    bool has_matches_in_area_of(Position first, Position second) const;
     std::vector<Position> breadth_first_search(Position start, Tile wish_tile) const; //поиск в ширину
     void bf_search_check_cell(
         std::unordered_set<Position, PositionHash>& already_checked,

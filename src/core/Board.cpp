@@ -262,52 +262,98 @@ void Board::bf_search_check_cell(
     }
 }
 
-//std::vector<Position> Board::find_matches(std::string side) const {
-//
-//    std::size_t first_coord_max = 0;
-//    std::size_t second_coord_max = 0;
-//    bool is_horizontal = false;
-//    if (side == "horizontal") {
-// //        first_coord_max = width_;
-//        second_coord_max = height_;
+bool Board::has_possible_moves(){
+    for (std::size_t y = 0; y < height_; y++) {
+        for (std::size_t x = 0; x < width_; x++) {
+            Position current{ x,y };
 
-//
-//        is_horizontal = true;
-//    }
-//    else if (side == "vertical") {
-        //        first_coord_max = width_;
-//        second_coord_max = height_;
-//    }
-//    else {
-//        return {};
-//    }
-//
-//    for (std::size_t first_coord = 0; first_coord < first_coord_max; first_coord++) {
-//        int counter = 1;
-//        Tile last_tile = Tile::Default; //значение по умолчанию
-//        for (std::size_t second_coord = 0; second_coord < second_coord_max; second_coord++) {
-//            Tile tile = Tile::Default;
-//            if (is_horizontal) {
-//                tile = at(second_coord, first_coord);
-//                
-//            }
-//            else {
-//                tile = at(first_coord, second_coord); //x, y
-//            }
-//            if (tile == last_tile) {
-//                counter++;
-//                if (counter == 3) {
-//                    //делаем поиск в ширину
-//                }
-//            }
-//            else {
-//                //сброс
-//                last_tile = tile;
-//                counter = 1;
-//            }
-//        }
-//    }
-//}
+            //горизонтально
+            if (x > 0) {
+                Position left{ x - 1,y };
+                try_swap(current, left);
+                if (has_matches_in_area_of(current, left)) {
+                    try_swap(current, left);//обратно
+                    return true;
+                }
+                else {
+                    try_swap(current, left); //обратно
+                }
+            }
+            
+
+            //вертикально
+            if (y > 0) {
+                Position up{ x,y - 1};
+                try_swap(current, up);
+                if (has_matches_in_area_of(current, up)) {
+                    try_swap(current, up); //обратно
+                    return true;
+                }
+                else {
+                    try_swap(current, up); //обратно
+                }
+            }
+        }
+    }
+    //значит решений нет
+    return false;
+}
+
+bool Board::has_matches_in_area_of(Position first, Position second) const {
+    //метод требует, но не проверяет чтобы ячейки были рядом
+    std::vector<std::size_t> vec_x;
+    std::vector<std::size_t> vec_y;
+    //определим какая координата совпадает
+    if (first.x == second.x) {
+        vec_x.push_back(first.x);
+        vec_y.push_back(first.y);
+        vec_y.push_back(second.y);
+    }
+    else { //значит совпадает y
+        vec_x.push_back(first.x);
+        vec_x.push_back(second.x);
+        vec_y.push_back(first.y);
+    }
+
+    //ищем совпадение в районе сначала по вертикали
+    for (auto& x : vec_x) {
+        int counter = 1;
+        Tile last_tile = Tile::Default;
+        for (int y = 0; y < height_; y++) { //проходим по всей оси
+            Tile curr_tile = at(x, y);
+            if (curr_tile == last_tile) {
+                counter++;
+                if (counter == 3) {
+                    return true;
+                }
+            }
+            else {
+                counter = 1;
+                last_tile = curr_tile;
+            }
+        }
+    }
+
+    //теперь по горизонтали
+    for (auto& y : vec_y) {
+        int counter = 1;
+        Tile last_tile = Tile::Default;
+        for (int x = 0; x < width_; x++) { //проходим по всей оси
+            Tile curr_tile = at(x, y);
+            if (curr_tile == last_tile) {
+                counter++;
+                if (counter == 3) {
+                    return true;
+                }
+            }
+            else {
+                counter = 1;
+                last_tile = curr_tile;
+            }
+        }
+    }
+    return false; //значит ничего не нашли
+}
 
 
 

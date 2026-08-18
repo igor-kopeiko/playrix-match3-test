@@ -60,7 +60,7 @@ int main() {
 
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(screenWidth, screenHeight, "Match-3");
-    SetTargetFPS(60);
+    SetTargetFPS(30);
 
     match3::Game game(x_offset, y_offset, cell_size, space_near_cell, cell_amount_x, cell_amount_y);
     g_game = &game;
