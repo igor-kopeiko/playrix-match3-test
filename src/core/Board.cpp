@@ -273,6 +273,7 @@ bool Board::has_possible_moves(){
                 try_swap(current, left);
                 if (has_matches_in_area_of(current, left)) {
                     try_swap(current, left);//обратно
+                    //std::cout << "solution = [" << current.x << " "  << current.y <<  "] [" << left.x<< " " << left.y << "]" << std::endl;
                     return true;
                 }
                 else {
@@ -287,6 +288,7 @@ bool Board::has_possible_moves(){
                 try_swap(current, up);
                 if (has_matches_in_area_of(current, up)) {
                     try_swap(current, up); //обратно
+                    //std::cout << "solution = [" << current.x << " " << current.y << "] [" << up.x << " " << up.y << "]" << std::endl;
                     return true;
                 }
                 else {

@@ -53,7 +53,7 @@ void Game::update() {
     //std::cout << std::endl;
     // 
     
-    std::cout << "possible = " << board_.has_possible_moves() << std::endl;
+    //std::cout << "possible = " << board_.has_possible_moves() << std::endl;
     
     //обработка нажатий мыши
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
@@ -92,7 +92,19 @@ void Game::draw() const {
                 static_cast<float>(kCellSize - space_near_cell*2),
                 static_cast<float>(kCellSize - space_near_cell*2),
             };
-
+            if (first_selected_cell) { //если выбрана клетка
+                if (first_selected_cell->x == x && first_selected_cell->y == y) { //если это текущая отрисовка
+                    const Rectangle boarder_cell{
+                        static_cast<float>(px),
+                        static_cast<float>(py),
+                        static_cast<float>(kCellSize),
+                        static_cast<float>(kCellSize),
+                    };
+                    
+                    DrawRectangleRounded(boarder_cell, 0.28F, 8, WHITE);
+                }
+            }
+            
             DrawRectangleRounded(cell, 0.28F, 8, colorForTile(board_.at(x, y)));
         }
     }
