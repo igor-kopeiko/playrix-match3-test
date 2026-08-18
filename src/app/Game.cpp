@@ -66,11 +66,24 @@ void Game::update() {
                 std::optional<Position> second_selected_cell = cell;
                 if (board_.try_match_swap(first_selected_cell.value(), second_selected_cell.value())) {
                     //найдем клетки которые входят в матч
-                    std::vector<Position> cells_in_match = board_.find_matches();
-                    board_.delete_cells(cells_in_match);
+                    std::vector<Position> cells_in_match;
+                    while(1){
+                        cells_in_match.clear();
+                        cells_in_match = board_.find_matches();
+                        if (cells_in_match.empty()) {
+                            break;
+                        }
 
-                    //сдвинем остальные клетки
-                    board_.collapse_cells();
+                        board_.delete_cells(cells_in_match);
+
+                        //сдвинем остальные клетки
+                        board_.collapse_cells();
+
+                        //заполним пустоты
+                        board_.fill_empty_cells();
+                    }
+
+                    
                 }
                 //board_.try_swap(first_selected_cell.value(), second_selected_cell.value());
                 first_selected_cell = std::nullopt;

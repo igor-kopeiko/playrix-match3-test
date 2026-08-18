@@ -406,6 +406,16 @@ void Board::collapse_cells() {
     }
 }
 
+void Board::fill_empty_cells() {
+    for (std::size_t x = 0; x < width_; x++) {
+        for (std::size_t y = 0; y < height_; y++) {
+            if (at(x, y) == Tile::Default) {
+                set(x, y, randomTile());
+            }
+        }
+    }
+}
+
 
 
 } // namespace match3
