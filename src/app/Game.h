@@ -4,6 +4,10 @@
 #include "core/Board.h"
 #include "core/Position.h"
 
+#include <iostream>
+#include <optional>
+#include <vector>
+
 namespace match3 {
 
 //struct LevelConfig {
@@ -29,13 +33,13 @@ private:
     const std::size_t cell_amount_x;
     const std::size_t cell_amount_y;
 
-    //
-    //Position get_chosen_cell(Vector2 mouse);
+    //вернет индексы выбранной клетки
+    std::optional<Position> get_chosen_cell(Vector2 mouse);
 
     //LevelConfig level_{8, 8}; //пока оставим дефолт
     Board board_{ cell_amount_x, cell_amount_y, 42 };
     
-
+    std::optional<Position> first_selected_cell = std::nullopt;
 
 };
 

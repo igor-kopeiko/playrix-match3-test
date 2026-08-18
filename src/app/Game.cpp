@@ -46,11 +46,23 @@ void Game::update() {
     // Input and animation state will live here.
     
     //обработка нажатий мыши
-    //if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-    //    Vector2 mouse = GetMousePosition();
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        Vector2 mouse = GetMousePosition();
 
-    //    // здесь обрабатываем клик
-    //}
+        // здесь обрабатываем клик
+        const std::optional<Position> cell = get_chosen_cell(mouse);
+        if (cell) {
+            if (first_selected_cell) { //если первую клетку уже присвоили
+                std::optional<Position> second_selected_cell = cell;
+                board_.try_swap(first_selected_cell.value(), second_selected_cell.value());
+                first_selected_cell = std::nullopt;
+            }
+            else {
+                //присваиваем первую клетку
+                first_selected_cell = cell;
+            }
+        }
+    }
 }
 
 void Game::draw() const {
@@ -80,12 +92,31 @@ void Game::draw() const {
 
 
 //=============================================
-//Position Game::get_chosen_cell(Vector2 mouse) {
-//
-//    Position pos;
-//
-//    return pos;
-//}
+std::optional<Position> Game::get_chosen_cell(Vector2 mouse) {
+
+    //считаем входит ли мышка на поле
+    int right_border = kBoardOffsetX + cell_amount_x * kCellSize;
+    if (mouse.x < kBoardOffsetX || mouse.x > right_border) {
+        std::cout << "Clicked missed" << std::endl;
+        return std::nullopt;
+    }
+    int lower_border = kBoardOffsetY + cell_amount_y * kCellSize;
+    if (mouse.y < kBoardOffsetY || mouse.y > lower_border) {
+        std::cout << "Clicked missed" << std::endl;
+        return std::nullopt;
+    }
+
+    
+    std::size_t local_mouse_x = mouse.x - kBoardOffsetX;
+    std::size_t local_mouse_y = mouse.y - kBoardOffsetY;
+
+    std::size_t x = local_mouse_x / kCellSize;
+    std::size_t y = local_mouse_y / kCellSize;
+
+    std::cout << "Clicked on border: x = " << x << " y = " << y << std::endl;
+
+    return Position{ x, y };
+}
 
 
 } // namespace match3
