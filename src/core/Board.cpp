@@ -21,8 +21,6 @@ Board::Board(const std::size_t width, const std::size_t height, const std::uint3
 void Board::create_board() {
     //создаем доску без совпадений
     for (std::size_t y = 0; y < height_; y++) {
-        int counter = 1;
-        Tile last_tile = Tile::Default; //значение по умолчанию
         for (std::size_t x = 0; x < width_; x++) {
             while(1){
                 //генерируем
