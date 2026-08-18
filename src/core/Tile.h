@@ -11,7 +11,8 @@ enum class Tile : std::uint8_t {
     Yellow,
     Purple,
     Orange,
-    Count
+    Count,
+    Default
 };
 
 } // namespace match3

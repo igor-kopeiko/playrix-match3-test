@@ -43,6 +43,11 @@ void Game::tick() {
 }
 
 void Game::update() {
+    std::vector<Position> matched_cells = board_.find_matches();
+    for (auto& elem : matched_cells) {
+        std::cout << " [" << elem.x << " " << elem.y << "] ";
+    }
+    std::cout << std::endl;
     // Input and animation state will live here.
     
     //обработка нажатий мыши
