@@ -64,7 +64,12 @@ void Game::update() {
         if (cell) {
             if (first_selected_cell) { //если первую клетку уже присвоили
                 std::optional<Position> second_selected_cell = cell;
-                board_.try_swap(first_selected_cell.value(), second_selected_cell.value());
+                if (board_.try_match_swap(first_selected_cell.value(), second_selected_cell.value())) {
+                    //найдем клетки которые входят в матч
+                    std::vector<Position> cells_in_match = board_.find_matches();
+                    board_.delete_cells(cells_in_match);
+                }
+                //board_.try_swap(first_selected_cell.value(), second_selected_cell.value());
                 first_selected_cell = std::nullopt;
             }
             else {
@@ -94,14 +99,14 @@ void Game::draw() const {
             };
             if (first_selected_cell) { //если выбрана клетка
                 if (first_selected_cell->x == x && first_selected_cell->y == y) { //если это текущая отрисовка
-                    const Rectangle boarder_cell{
+                    const Rectangle border_cell{
                         static_cast<float>(px),
                         static_cast<float>(py),
                         static_cast<float>(kCellSize),
                         static_cast<float>(kCellSize),
                     };
                     
-                    DrawRectangleRounded(boarder_cell, 0.28F, 8, WHITE);
+                    DrawRectangleRounded(border_cell, 0.28F, 8, WHITE);
                 }
             }
             

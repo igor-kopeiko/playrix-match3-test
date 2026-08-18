@@ -357,6 +357,26 @@ bool Board::has_matches_in_area_of(Position first, Position second) const {
     return false; //значит ничего не нашли
 }
 
+bool Board::try_match_swap(Position first, Position second) {
+    if (!try_swap(first, second)) {
+        return false;
+    }
+    if (has_matches_in_area_of(first, second)) {
+        //find_matches();
+        return true;
+    }
+    else {
+        try_swap(first, second);//обратно
+        return false;
+    }
+}
+
+void Board::delete_cells(std::vector<Position>& cells_to_delete) {
+    for (auto& cell_pos : cells_to_delete) {
+        set(cell_pos, Tile::Default);
+    }
+}
+
 
 
 } // namespace match3

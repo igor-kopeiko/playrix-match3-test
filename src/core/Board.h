@@ -31,8 +31,10 @@ public:
 
     std::vector<Position> find_matches() const;
     bool has_possible_moves();
-    
 
+    bool try_match_swap(Position first, Position second);
+    
+    void delete_cells(std::vector<Position>& cells_to_delete);
     
 
 private:
