@@ -26,6 +26,14 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(raylib)
 
+FetchContent_Declare(
+    nlohmann_json
+    GIT_REPOSITORY https://github.com/nlohmann/json.git
+    GIT_TAG v3.11.3
+    GIT_SHALLOW TRUE
+)
+FetchContent_MakeAvailable(nlohmann_json)
+
 # -------------------- Core game logic --------------------
 add_library(match3_core STATIC
     src/core/Board.cpp
@@ -51,7 +59,11 @@ add_executable(match3
     src/app/App.cpp
 )
 
-target_link_libraries(match3 PRIVATE match3_core raylib)
+target_link_libraries(match3 PRIVATE
+    match3_core
+    raylib
+    nlohmann_json::nlohmann_json
+)
 target_include_directories(match3 PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 if(EMSCRIPTEN)
