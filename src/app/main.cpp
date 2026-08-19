@@ -1,4 +1,5 @@
 #include "app/Game.h"
+#include "app/App.h"
 
 #include "raylib.h"
 
@@ -10,26 +11,26 @@
 
 namespace {
 
-bool validate_settings(int cell_amount_x, int cell_amount_y, int cell_size, int space_near_cell ) {
-    if (cell_amount_x < 8 || cell_amount_x > 16) {
-        return false;
-    }
-    if (cell_amount_y < 8 || cell_amount_y > 16) {
-        return false;
-    }
-    if (cell_size < 32 || cell_size > 64) {
-        return false;
-    }
-    if (space_near_cell < 0 || space_near_cell > 8) {
-        return false;
-    }
-    return true;
-}
+//bool validate_settings(int cell_amount_x, int cell_amount_y, int cell_size, int space_near_cell ) {
+//    if (cell_amount_x < 8 || cell_amount_x > 16) {
+//        return false;
+//    }
+//    if (cell_amount_y < 8 || cell_amount_y > 16) {
+//        return false;
+//    }
+//    if (cell_size < 32 || cell_size > 64) {
+//        return false;
+//    }
+//    if (space_near_cell < 0 || space_near_cell > 8) {
+//        return false;
+//    }
+//    return true;
+//}
 
-match3::Game* g_game = nullptr;
+match3::App* g_app = nullptr;
 
 void mainLoop() {
-    g_game->tick();
+    g_app->tick();
 }
 
 } // namespace
@@ -43,10 +44,10 @@ int main() {
     constexpr int space_near_cell = 4; //то же самое что расстояние между клетками/2
 
     //ПРОВЕРКА НАСТРОЕК
-    if (!validate_settings(cell_amount_x, cell_amount_y, cell_size, space_near_cell)) {
-        std::cout << "Settings error" << std::endl;
-        return 0;
-    }
+    //if (!validate_settings(cell_amount_x, cell_amount_y, cell_size, space_near_cell)) {
+    //    std::cout << "Settings error" << std::endl;
+    //    return 0;
+    //}
 
     // Расчет размеров окна
     int x_offset = 44;
@@ -62,8 +63,11 @@ int main() {
     InitWindow(screenWidth, screenHeight, "Match-3");
     SetTargetFPS(30);
 
-    match3::Game game(x_offset, y_offset, cell_size, space_near_cell, cell_amount_x, cell_amount_y);
-    g_game = &game;
+    //match3::Game game(x_offset, y_offset, cell_size, space_near_cell, cell_amount_x, cell_amount_y);
+    //g_game = &game;
+
+    match3::App app(x_offset, y_offset, cell_size, space_near_cell, cell_amount_x, cell_amount_y);
+    g_app = &app;
 
 #ifdef __EMSCRIPTEN__
     emscripten_set_main_loop(mainLoop, 0, 1);

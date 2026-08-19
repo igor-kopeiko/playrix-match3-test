@@ -48,6 +48,7 @@ endif()
 add_executable(match3
     src/app/main.cpp
     src/app/Game.cpp
+    src/app/App.cpp
 )
 
 target_link_libraries(match3 PRIVATE match3_core raylib)
