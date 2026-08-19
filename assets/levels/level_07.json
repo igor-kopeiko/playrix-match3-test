@@ -1,0 +1,13 @@
+{
+  "id": 7,
+  "name": "Orange Rush",
+  "width": 9,
+  "height": 9,
+  "colors": 6,
+  "moves": 25,
+  "goals": [
+    { "color": "Orange", "amount": 20 },
+    { "color": "Blue", "amount": 18 },
+    { "color": "Yellow", "amount": 18 }
+  ]
+}
