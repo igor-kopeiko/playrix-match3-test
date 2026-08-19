@@ -9,10 +9,12 @@ namespace match3 {
 App::App(int kBoardOffsetX, int kBoardOffsetY, int kCellSize, int space_near_cell, std::size_t cell_amount_x, std::size_t cell_amount_y) 
 {
 	//game_ = std::make_unique<Game>(kBoardOffsetX, kBoardOffsetY, kCellSize, space_near_cell, cell_amount_x, cell_amount_y);
+    create_level_filenames_vec();
+    std::cout << "App created " << std::endl;
 }
 
 void App::create_level_filenames_vec() {
-	for (int lvl = 1; lvl < levels_amount; lvl++) {
+	for (int lvl = 1; lvl <= levels_amount; lvl++) {
 		std::string path = "assets/levels/level_";
 		std::string lvl_str;
 		if (lvl < 10) {
@@ -22,6 +24,7 @@ void App::create_level_filenames_vec() {
 			lvl_str = std::to_string(lvl);
 		}
 		path += lvl_str;
+        path += ".json";
 
 		filenames.push_back(path);
 
@@ -45,9 +48,10 @@ void App::tick() {
 }
 
 void App::level_select_tick() {
+    std::cout << "try load levels" << std::endl;
 	try_load_levels();
 
-
+    std::cout << "draw level select" << std::endl;
 	draw_level_select();
 
 }
@@ -55,12 +59,18 @@ void App::level_select_tick() {
 void App::try_load_levels() {
 	//проверяем наличие уровня
 	for (int i = 0; i < filenames.size(); i++) {
+        std::cout << "will get time " << filenames[i] << std::endl;
 		auto time = std::filesystem::last_write_time(filenames[i]);
+        std::cout << "got time " << filenames[i] << std::endl;
 		if (time != level_write_times_[i]) {
 			//значит надо перезаписать уровень
+            std::cout << "will load " << filenames[i] << std::endl;
 			levels_data[i] = load_level_cfg_file(filenames[i]);
             std::cout << "loaded " << filenames[i]  << std::endl;
-		}
+        }
+        else {
+            std::cout << "not loaded " << filenames[i] << std::endl;
+        }
 	}
 }
 
@@ -155,21 +165,21 @@ void App::draw_level_select() const
             RAYWHITE
         );
 
-        if (i < levels_data.size()) {
-            const std::string name =
-                levels_data[i].name;
+        //if (i < levels_data.size()) {
+        //    const std::string name =
+        //        levels_data[i].name;
 
-            const int name_width =
-                MeasureText(name.c_str(), 14);
+        //    const int name_width =
+        //        MeasureText(name.c_str(), 14);
 
-            DrawText(
-                name.c_str(),
-                x + (button_width - name_width) / 2,
-                y + 42,
-                14,
-                LIGHTGRAY
-            );
-        }
+        //    DrawText(
+        //        name.c_str(),
+        //        x + (button_width - name_width) / 2,
+        //        y + 42,
+        //        14,
+        //        LIGHTGRAY
+        //    );
+        //}
     }
 
     EndDrawing();
@@ -185,6 +195,7 @@ LevelConfig App::load_level_cfg_file(std::string path) {
 		// ошибка
 		level.name = "error";
 		level.id = 0;
+        return level;
 	}
 
 	json data;
