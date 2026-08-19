@@ -34,7 +34,9 @@ Game::Game(int kBoardOffsetX, int kBoardOffsetY, int kCellSize, int space_near_c
     cell_amount_x{ cell_amount_x },
     cell_amount_y{ cell_amount_y }
 {
-
+    animation_duration.swapping = 0.2;
+    animation_duration.removing = 0.2;
+    animation_duration.fall_speed_pix_pro_sec = 500.0;
 }
 
 
@@ -68,46 +70,10 @@ void Game::update() {
     case GameState::Checking:
         update_checking();
         break;
+    case GameState::Shuffling:
+        update_shuffling();
+        break;
     }
-
-    //обработка нажатий мыши
-    //if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-    //    Vector2 mouse = GetMousePosition();
-
-    //    // здесь обрабатываем клик
-    //    const std::optional<Position> cell = get_chosen_cell(mouse);
-    //    if (cell) {
-    //        if (first_selected_cell) { //если первую клетку уже присвоили
-    //            std::optional<Position> second_selected_cell = cell;
-    //            if (board_.try_match_swap(first_selected_cell.value(), second_selected_cell.value())) {
-    //                //найдем клетки которые входят в матч
-    //                std::vector<Position> cells_in_match;
-    //                while(1){
-    //                    cells_in_match = board_.find_matches();
-    //                    if (cells_in_match.empty()) {
-    //                        break;
-    //                    }
-
-    //                    board_.delete_cells(cells_in_match);
-
-    //                    //сдвинем остальные клетки
-    //                    board_.collapse_cells();
-
-    //                    //заполним пустоты
-    //                    board_.fill_empty_cells();
-    //                }
-
-    //                
-    //            }
-    //            //board_.try_swap(first_selected_cell.value(), second_selected_cell.value());
-    //            first_selected_cell = std::nullopt;
-    //        }
-    //        else {
-    //            //присваиваем первую клетку
-    //            first_selected_cell = cell;
-    //        }
-    //    }
-    //}
 }
 
 void Game::update_idle() {
@@ -214,11 +180,22 @@ void Game::update_falling() {
 void Game::update_checking() {
     cells_to_remove = board_.find_matches();
     if (cells_to_remove.empty()) {
-        current_game_state = GameState::Idle;
+        if (board_.has_possible_moves()) {
+            current_game_state = GameState::Idle;
+        }
+        else {
+            current_game_state = GameState::Shuffling;
+        }
+        
     }
     else {
         current_game_state = GameState::Removing;
     }
+}
+
+void Game::update_shuffling() {
+    board_.shuffle_until_possible_solution();
+    current_game_state = GameState::Idle;
 }
 
 

@@ -437,6 +437,16 @@ std::vector<FallMove> Board::fill_empty_cells() {
     return new_cells;
 }
 
+void Board::shuffle() {
+    std::shuffle(tiles_.begin(), tiles_.end(),rng_);
+}
+
+void Board::shuffle_until_possible_solution() {
+    while (!has_possible_moves()) {
+        shuffle();
+    }
+}
+
 
 
 } // namespace match3

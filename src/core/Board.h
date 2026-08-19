@@ -9,6 +9,7 @@
 #include <random>
 #include <vector>
 #include <unordered_set>
+#include <algorithm>
 
 namespace match3 {
 
@@ -43,6 +44,9 @@ public:
     void delete_cells(std::vector<Position>& cells_to_delete);
     std::vector<FallMove> collapse_cells();
     std::vector<FallMove>  fill_empty_cells();
+
+    void shuffle();
+    void shuffle_until_possible_solution();
     
 
 private:

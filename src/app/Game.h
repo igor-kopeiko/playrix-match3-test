@@ -16,7 +16,8 @@ enum class GameState {
     BackSwapping,//если swap недопустим
     Removing,   // удаляем совпавшие фишки
     Falling,    // фишки падают вниз
-    Checking     //проверка наличие match
+    Checking,     //проверка наличие match
+    Shuffling //перемешивание в случае отсуствия возможных решений
 };
 
 struct Swapping_shift {
@@ -30,9 +31,9 @@ struct Swapping_poses {
 };
 
 struct Animation_duration {
-    float swapping = 1.0; //back_swapping выполняется то же время
-    float removing = 1.0;
-    float fall_speed_pix_pro_sec = 100;
+    float swapping; //back_swapping выполняется то же время
+    float removing;
+    float fall_speed_pix_pro_sec;
 
 };
 
@@ -57,6 +58,7 @@ private:
     void update_removing();
     void update_falling();
     void update_checking();
+    void update_shuffling();
 
 
 
@@ -96,7 +98,7 @@ private:
 
     Swapping_shift swapping_shift{};
 
-    const Animation_duration animation_duration{};
+    Animation_duration animation_duration{};
 
     std::vector<Position> cells_to_remove;
 
