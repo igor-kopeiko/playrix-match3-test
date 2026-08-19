@@ -66,6 +66,7 @@ void Game::update() {
         break;
 
     case GameState::Checking:
+        update_checking();
         break;
     }
 
@@ -209,6 +210,18 @@ void Game::update_falling() {
         current_game_state = GameState::Checking;
     }
 }
+
+void Game::update_checking() {
+    cells_to_remove = board_.find_matches();
+    if (cells_to_remove.empty()) {
+        current_game_state = GameState::Idle;
+    }
+    else {
+        current_game_state = GameState::Removing;
+    }
+}
+
+
 
 //==========================================================
 
@@ -428,6 +441,9 @@ void Game::draw_fallen_cell(FallMove fall_cell) const{
     };
     DrawRectangleRounded(cell, 0.28F, 8, colorForTile(fall_cell.tile));
 }
+
+
+
 
 
 //=============================================
