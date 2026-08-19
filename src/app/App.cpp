@@ -14,8 +14,10 @@ App::App(int kBoardOffsetX, int kBoardOffsetY, int kCellSize, int space_near_cel
 }
 
 void App::create_level_filenames_vec() {
+    
 	for (int lvl = 1; lvl <= levels_amount; lvl++) {
-		std::string path = "assets/levels/level_";
+        std::string path = MATCH3_ASSETS_DIR;
+        path += "/levels/level_";
 		std::string lvl_str;
 		if (lvl < 10) {
 			lvl_str = "0" + std::to_string(lvl);
@@ -48,10 +50,8 @@ void App::tick() {
 }
 
 void App::level_select_tick() {
-    std::cout << "try load levels" << std::endl;
 	try_load_levels();
 
-    std::cout << "draw level select" << std::endl;
 	draw_level_select();
 
 }
@@ -59,17 +59,14 @@ void App::level_select_tick() {
 void App::try_load_levels() {
 	//проверяем наличие уровня
 	for (int i = 0; i < filenames.size(); i++) {
-        std::cout << "will get time " << filenames[i] << std::endl;
 		auto time = std::filesystem::last_write_time(filenames[i]);
-        std::cout << "got time " << filenames[i] << std::endl;
 		if (time != level_write_times_[i]) {
 			//значит надо перезаписать уровень
-            std::cout << "will load " << filenames[i] << std::endl;
 			levels_data[i] = load_level_cfg_file(filenames[i]);
             std::cout << "loaded " << filenames[i]  << std::endl;
         }
         else {
-            std::cout << "not loaded " << filenames[i] << std::endl;
+            //std::cout << "not loaded " << filenames[i] << std::endl;
         }
 	}
 }
