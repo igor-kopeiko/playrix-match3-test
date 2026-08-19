@@ -1,0 +1,16 @@
+{
+  "id": 10,
+  "name": "Final Mix",
+  "width": 10,
+  "height": 10,
+  "colors": 6,
+  "moves": 32,
+  "goals": [
+    { "color": "Red", "amount": 18 },
+    { "color": "Green", "amount": 18 },
+    { "color": "Blue", "amount": 18 },
+    { "color": "Yellow", "amount": 18 },
+    { "color": "Purple", "amount": 15 },
+    { "color": "Orange", "amount": 15 }
+  ]
+}
