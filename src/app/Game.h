@@ -16,7 +16,7 @@ enum class GameState {
     BackSwapping,//если swap недопустим
     Removing,   // удаляем совпавшие фишки
     Falling,    // фишки падают вниз
-    Filling     // появляются новые фишки
+    Checking     //проверка наличие match
 };
 
 struct Swapping_shift {
@@ -56,7 +56,7 @@ private:
     void update_back_swapping();
     void update_removing();
     void update_falling();
-    void update_filling();
+    void update_checking();
 
 
 

@@ -65,7 +65,7 @@ void Game::update() {
         update_falling();
         break;
 
-    case GameState::Filling:
+    case GameState::Checking:
         break;
     }
 
@@ -178,6 +178,18 @@ void Game::update_removing() {
 
         //получим список клеток которые упали
         falling_cells = board_.collapse_cells();
+
+        int old_falling_cells_amount = falling_cells.size();
+
+        //добавим в список новые клетки
+        //for (int i = 0; i < old_falling_cells_amount; i++) {
+        //    FallMove new_cell;
+        //    new_cell.tile = board_.randomTile();
+        //    falling_cells.push_back
+        //}
+
+
+
         //Вычислим самый долгое по времени падение
         int max_dist = 0;
         for (auto& elem : falling_cells) {
@@ -198,7 +210,7 @@ void Game::update_falling() {
     animation_timer += GetFrameTime();
     if (animation_timer >= max_falling_time) { //ждем пока анимация завершится
         animation_timer = 0.0;
-        current_game_state = GameState::Filling;
+        current_game_state = GameState::Checking;
     }
 }
 
@@ -208,19 +220,28 @@ void Game::draw() const {
     BeginDrawing();
     //черный цвет
     ClearBackground(Color{24, 27, 36, 255});
+    //заголовок: текст, x, y, размер шрифта
+    //DrawText("Match-3 C++ / WebAssembly", kBoardOffsetX, 28, 24, RAYWHITE);
 
-
+    BeginScissorMode(
+        kBoardOffsetX,
+        kBoardOffsetY,
+        static_cast<int>(board_.width()) * kCellSize,
+        static_cast<int>(board_.height()) * kCellSize
+    );
     for (std::size_t y = 0; y < board_.height(); ++y) {
         for (std::size_t x = 0; x < board_.width(); ++x) {
 
 
             switch (current_game_state) {
             case GameState::Idle:
+                //DrawText("State: Idle", kBoardOffsetX, 28, 24, RAYWHITE);
                 //обычный показ доски
                 draw_regular_cell(x, y);
                 break;
 
             case GameState::Swapping:
+                //("State: Swapping", kBoardOffsetX, 28, 24, RAYWHITE);
                 if (swapping_poses.first.x == x && swapping_poses.first.y == y) {
                     draw_swapping_cell(x, y);
                 }
@@ -232,6 +253,7 @@ void Game::draw() const {
                 }
                 break;
             case GameState::BackSwapping:
+                //DrawText("State: BackSwapping", kBoardOffsetX, 28, 24, RAYWHITE);
                 if (swapping_poses.first.x == x && swapping_poses.first.y == y) {
                     draw_swapping_cell(x, y);
                 }
@@ -244,6 +266,7 @@ void Game::draw() const {
                 break;
 
             case GameState::Removing: {
+                //DrawText("State: Removing", kBoardOffsetX, 28, 24, RAYWHITE);
                 bool need_to_remove = false;
                 for (auto& cell : cells_to_remove) {
                     if (cell.x == x && cell.y == y) {
@@ -259,6 +282,7 @@ void Game::draw() const {
                 break;
             }
             case GameState::Falling: {
+                //DrawText("State: Falling", kBoardOffsetX, 28, 24, RAYWHITE);
                 bool is_falling = false;
                 for (auto& cell : falling_cells) {
                     if (cell.to.x == x && cell.to.y == y) {
@@ -271,7 +295,8 @@ void Game::draw() const {
                 }
                 break;
             }
-            case GameState::Filling:
+            case GameState::Checking:
+                //DrawText("State: Filling", kBoardOffsetX, 28, 24, RAYWHITE);
                 draw_regular_cell(x, y);//DEBAG 
                 break;
 
@@ -281,9 +306,31 @@ void Game::draw() const {
 
         }
     }
-    //Дебаг
-    //заголовок: текст, x, y, размер шрифта
-    //DrawText("Match-3 C++ / WebAssembly", kBoardOffsetX, 28, 24, RAYWHITE);
+
+    EndScissorMode();
+
+    //Дебаг вывод состояния
+    switch (current_game_state) {
+    case GameState::Idle:
+        DrawText("State: Idle", kBoardOffsetX, 28, 24, RAYWHITE);
+        break;
+
+    case GameState::Swapping:
+        DrawText("State: Swapping", kBoardOffsetX, 28, 24, RAYWHITE);
+        break;
+
+    case GameState::BackSwapping:
+        DrawText("State: BackSwapping", kBoardOffsetX, 28, 24, RAYWHITE);
+        break;
+
+    case GameState::Removing: 
+        DrawText("State: Removing", kBoardOffsetX, 28, 24, RAYWHITE);
+        break;
+
+    case GameState::Falling: 
+        DrawText("State: Falling", kBoardOffsetX, 28, 24, RAYWHITE);
+        break;
+    }
 
     EndDrawing();
 }
