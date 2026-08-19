@@ -31,7 +31,7 @@ struct Swapping_poses {
 
 struct Animation_duration {
     float swapping = 1.0; //back_swapping выполняется то же время
-    float removig = 1.0;
+    float removing = 1.0;
     //float back_swapping = 1.0;
 
 };
@@ -62,6 +62,7 @@ private:
     void draw() const;
     void draw_regular_cell(std::size_t x, std::size_t y) const;
     void draw_swapping_cell(std::size_t x, std::size_t y) const;
+    void draw_removing_cell(std::size_t x, std::size_t y) const;
 
     const int kBoardOffsetX; //отступ первой ячейки от края
     const int kBoardOffsetY;
@@ -93,6 +94,8 @@ private:
     Swapping_shift swapping_shift{};
 
     Animation_duration animation_duration{};
+
+    std::vector<Position> cells_to_remove;
 
 };
 

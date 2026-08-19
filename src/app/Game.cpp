@@ -58,6 +58,7 @@ void Game::update() {
         break;
 
     case GameState::Removing:
+        update_removing();
         break;
 
     case GameState::Falling:
@@ -143,7 +144,10 @@ void Game::update_swapping() {
         if (board_.try_match_swap(swapping_poses.first, swapping_poses.second)) {
             animation_timer = 0.0; //сброс таймера только если нет back swapping
             current_game_state = GameState::Removing;
-            
+
+            //вычислим клетки для удаления
+            //найдем клетки которые входят в матч
+            cells_to_remove = board_.find_matches();
         }
         else {
             //значит нужно вернуть все обратно
@@ -159,6 +163,17 @@ void Game::update_back_swapping() {
     if (animation_timer <= 0.0) {
         animation_timer = 0.0; //сброс таймера
         current_game_state = GameState::Idle;
+    }
+}
+
+void Game::update_removing() {
+
+    animation_timer += GetFrameTime();
+
+    if (animation_timer >= animation_duration.removing) {
+        animation_timer = 0.0; //сброс таймера
+        board_.delete_cells(cells_to_remove); //окончательное удаление клеток
+        current_game_state = GameState::Falling;
     }
 }
 
@@ -203,6 +218,30 @@ void Game::draw() const {
                     draw_regular_cell(x, y);
                 }
                 break;
+
+            case GameState::Removing: {
+                bool need_to_remove = false;
+                for (auto& cell : cells_to_remove) {
+                    if (cell.x == x && cell.y == y) {
+                        need_to_remove = true;
+                    }
+                }
+                if (need_to_remove) {
+                    draw_removing_cell(x, y);
+                }
+                else {
+                    draw_regular_cell(x, y);
+                }
+                break;
+            }
+            case GameState::Falling:
+                draw_regular_cell(x, y);//DEBAG 
+                break;
+
+            case GameState::Filling:
+                draw_regular_cell(x, y);//DEBAG 
+                break;
+
             } //switch
 
 
@@ -263,6 +302,26 @@ void Game::draw_swapping_cell(std::size_t x, std::size_t y) const {
         static_cast<float>(kCellSize - space_near_cell * 2),
     };
     DrawRectangleRounded(cell, 0.28F, 8, colorForTile(board_.at(x, y)));
+}
+
+void Game::draw_removing_cell(std::size_t x, std::size_t y) const {
+    //Делает прозрачность
+    const int px = kBoardOffsetX + static_cast<int>(x) * kCellSize;
+    const int py = kBoardOffsetY + static_cast<int>(y) * kCellSize;
+
+    int shift_px = 0;
+    int shift_py = 0;
+
+    float progress = animation_timer / animation_duration.removing;
+
+    const Rectangle cell{
+        static_cast<float>(px + space_near_cell + shift_px),
+        static_cast<float>(py + space_near_cell + shift_py),
+        static_cast<float>(kCellSize - space_near_cell * 2),
+        static_cast<float>(kCellSize - space_near_cell * 2),
+    };
+    Color color = Fade(colorForTile(board_.at(x, y)), 1.0 - progress); //прозрачность
+    DrawRectangleRounded(cell, 0.28F, 8, color);
 }
 
 
