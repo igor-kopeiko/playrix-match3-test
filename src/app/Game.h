@@ -32,7 +32,7 @@ struct Swapping_poses {
 struct Animation_duration {
     float swapping = 1.0; //back_swapping выполняется то же время
     float removing = 1.0;
-    float fall_speed_pix_pro_sec = 500;
+    float fall_speed_pix_pro_sec = 100;
 
 };
 

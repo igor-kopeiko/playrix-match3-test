@@ -178,17 +178,13 @@ void Game::update_removing() {
 
         //получим список клеток которые упали
         falling_cells = board_.collapse_cells();
+        std::vector<FallMove> new_cells = board_.fill_empty_cells();
 
-        int old_falling_cells_amount = falling_cells.size();
-
-        //добавим в список новые клетки
-        //for (int i = 0; i < old_falling_cells_amount; i++) {
-        //    FallMove new_cell;
-        //    new_cell.tile = board_.randomTile();
-        //    falling_cells.push_back
-        //}
-
-
+        falling_cells.insert(
+            falling_cells.end(),
+            new_cells.begin(),
+            new_cells.end()
+        );
 
         //Вычислим самый долгое по времени падение
         int max_dist = 0;
@@ -453,8 +449,8 @@ std::optional<Position> Game::get_chosen_cell(Vector2 mouse) {
     std::size_t local_mouse_x = mouse.x - kBoardOffsetX;
     std::size_t local_mouse_y = mouse.y - kBoardOffsetY;
 
-    std::size_t x = local_mouse_x / kCellSize;
-    std::size_t y = local_mouse_y / kCellSize;
+    int x = local_mouse_x / kCellSize;
+    int y = local_mouse_y / kCellSize;
 
     std::cout << "Clicked on border: x = " << x << " y = " << y << std::endl;
 

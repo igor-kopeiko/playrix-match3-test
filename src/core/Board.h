@@ -42,7 +42,7 @@ public:
     
     void delete_cells(std::vector<Position>& cells_to_delete);
     std::vector<FallMove> collapse_cells();
-    void fill_empty_cells();
+    std::vector<FallMove>  fill_empty_cells();
     
 
 private:

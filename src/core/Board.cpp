@@ -145,10 +145,10 @@ std::vector<Position> Board::find_matches() const {
     std::vector<std::vector<Position>> groups_of_cells_to_delete;
     
     //Сначала ищем 3 в ряд в вертикально, то есть в столбце
-    for (std::size_t x = 0; x < width_; x++) {
+    for (int x = 0; x < width_; x++) {
         int counter = 1;
         Tile last_tile = Tile::Default; //значение по умолчанию
-        for (std::size_t y = 0; y < height_; y++) {
+        for (int y = 0; y < height_; y++) {
             Tile tile = at(x, y);
 
             if (tile == last_tile) {
@@ -169,10 +169,10 @@ std::vector<Position> Board::find_matches() const {
     //====================================================
     //теперь ищем 3 в ряд в горизонтально, по строкам
     
-    for (std::size_t y = 0; y < height_; y++) {
+    for (int y = 0; y < height_; y++) {
         int counter = 1;
         Tile last_tile = Tile::Default; //значение по умолчанию
-        for (std::size_t x = 0; x < width_; x++) {
+        for (int x = 0; x < width_; x++) {
             Tile tile = at(x, y);
             if (tile == last_tile) {
                 counter++;
@@ -381,7 +381,7 @@ std::vector<FallMove> Board::collapse_cells() {
     //вернет вектор пару откуда и куда упала клетка
     std::vector<FallMove> fallen_cells;
     for (int x = 0; x < width_; x++) {
-        std::size_t current_empty_y = 0;
+        int current_empty_y = 0;
         bool found_empty = false;
 
         for (int y = (int)height_ - 1; y >= 0; y--) {
@@ -394,8 +394,8 @@ std::vector<FallMove> Board::collapse_cells() {
                 if (found_empty) {
                     FallMove fall;
                     fall.tile = curr_cell;
-                    fall.from = { (std::size_t)x, (std::size_t)y };
-                    fall.to = { (std::size_t)x, (std::size_t)current_empty_y };
+                    fall.from = { x, y };
+                    fall.to = { x, current_empty_y };
                     fallen_cells.push_back(fall);
 
                     set(x, current_empty_y, curr_cell);
@@ -415,14 +415,26 @@ std::vector<FallMove> Board::collapse_cells() {
     return fallen_cells;
 }
 
-void Board::fill_empty_cells() {
-    for (std::size_t x = 0; x < width_; x++) {
-        for (std::size_t y = 0; y < height_; y++) {
+std::vector<FallMove> Board::fill_empty_cells() {
+    std::vector<FallMove> new_cells;
+    for (int x = 0; x < width_; x++) {
+        //самому нижнему новому элементу присваивается позиция для падения -1
+        int y_above_board = -1;
+        for (int y = height_ - 1; y >= 0; y--) {
             if (at(x, y) == Tile::Default) {
-                set(x, y, randomTile());
+                Tile new_tile = randomTile();
+                set(x, y, new_tile);
+
+                FallMove new_cell;
+                new_cell.tile = new_tile;
+                new_cell.to = { x, y};
+                new_cell.from = { x,y_above_board };
+                y_above_board--;
+                new_cells.push_back(new_cell);
             }
         }
     }
+    return new_cells;
 }
 
 
