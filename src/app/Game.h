@@ -33,6 +33,7 @@ struct Animation_duration {
     float swapping = 1.0; //back_swapping выполняется то же время
     float removing = 1.0;
     float fall_speed_pix_pro_sec = 500;
+
 };
 
 
@@ -60,11 +61,11 @@ private:
 
 
 
-    void draw();
+    void draw() const;
     void draw_regular_cell(std::size_t x, std::size_t y) const;
     void draw_swapping_cell(std::size_t x, std::size_t y) const;
     void draw_removing_cell(std::size_t x, std::size_t y) const;
-    bool draw_fallen_cell(FallMove fall_cell)const;
+    void draw_fallen_cell(FallMove fall_cell) const;
 
     const int kBoardOffsetX; //отступ первой ячейки от края
     const int kBoardOffsetY;
@@ -95,12 +96,12 @@ private:
 
     Swapping_shift swapping_shift{};
 
-    Animation_duration animation_duration{};
+    const Animation_duration animation_duration{};
 
     std::vector<Position> cells_to_remove;
 
     std::vector<FallMove> falling_cells;
-    bool old_falling_complete = false;
+    float max_falling_time = 0.0;
 
 };
 
