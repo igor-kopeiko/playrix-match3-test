@@ -32,9 +32,10 @@ struct Swapping_poses {
 struct Animation_duration {
     float swapping = 1.0; //back_swapping выполняется то же время
     float removing = 1.0;
-    //float back_swapping = 1.0;
-
+    float fall_speed_pix_pro_sec = 500;
 };
+
+
 
 //struct LevelConfig {
 //    std::size_t width;
@@ -59,10 +60,11 @@ private:
 
 
 
-    void draw() const;
+    void draw();
     void draw_regular_cell(std::size_t x, std::size_t y) const;
     void draw_swapping_cell(std::size_t x, std::size_t y) const;
     void draw_removing_cell(std::size_t x, std::size_t y) const;
+    bool draw_fallen_cell(FallMove fall_cell)const;
 
     const int kBoardOffsetX; //отступ первой ячейки от края
     const int kBoardOffsetY;
@@ -96,6 +98,9 @@ private:
     Animation_duration animation_duration{};
 
     std::vector<Position> cells_to_remove;
+
+    std::vector<FallMove> falling_cells;
+    bool old_falling_complete = false;
 
 };
 

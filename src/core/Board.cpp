@@ -377,7 +377,9 @@ void Board::delete_cells(std::vector<Position>& cells_to_delete) {
     }
 }
 
-void Board::collapse_cells() {
+std::vector<FallMove> Board::collapse_cells() {
+    //вернет вектор пару откуда и куда упала клетка
+    std::vector<FallMove> fallen_cells;
     for (int x = 0; x < width_; x++) {
         std::size_t current_empty_y = 0;
         bool found_empty = false;
@@ -390,6 +392,12 @@ void Board::collapse_cells() {
             }
             else {
                 if (found_empty) {
+                    FallMove fall;
+                    fall.tile = curr_cell;
+                    fall.from = { (std::size_t)x, (std::size_t)y };
+                    fall.to = { (std::size_t)x, (std::size_t)current_empty_y };
+                    fallen_cells.push_back(fall);
+
                     set(x, current_empty_y, curr_cell);
                     set(x, y, Tile::Default);
                     //ищем следующую пустую клетку
@@ -404,6 +412,7 @@ void Board::collapse_cells() {
         }
 
     }
+    return fallen_cells;
 }
 
 void Board::fill_empty_cells() {

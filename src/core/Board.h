@@ -12,6 +12,12 @@
 
 namespace match3 {
 
+struct FallMove {
+    Tile tile;
+    Position from;
+    Position to;
+};
+
 class Board {
 public:
     Board(std::size_t width, std::size_t height, std::uint32_t seed = std::random_device{}());
@@ -35,7 +41,7 @@ public:
     bool try_match_swap(Position first, Position second);
     
     void delete_cells(std::vector<Position>& cells_to_delete);
-    void collapse_cells();
+    std::vector<FallMove> collapse_cells();
     void fill_empty_cells();
     
 

@@ -62,6 +62,7 @@ void Game::update() {
         break;
 
     case GameState::Falling:
+        update_falling();
         break;
 
     case GameState::Filling:
@@ -174,18 +175,30 @@ void Game::update_removing() {
         animation_timer = 0.0; //сброс таймера
         board_.delete_cells(cells_to_remove); //окончательное удаление клеток
         current_game_state = GameState::Falling;
+
+        //получим список клеток которые упали
+        falling_cells = board_.collapse_cells();
+    }
+}
+
+void Game::update_falling() {
+    animation_timer += GetFrameTime();
+    if (old_falling_complete) { //ждем пока анимация завершится
+        animation_timer = 0.0;
+        old_falling_complete = false;
+        current_game_state = GameState::Filling;
     }
 }
 
 //==========================================================
 
-void Game::draw() const {
+void Game::draw() {
     BeginDrawing();
     //черный цвет
     ClearBackground(Color{24, 27, 36, 255});
     //заголовок: текст, x, y, размер шрифта
     //DrawText("Match-3 C++ / WebAssembly", kBoardOffsetX, 28, 24, RAYWHITE);
-
+    int falling_cells_animation_complete_amount = 0;
     for (std::size_t y = 0; y < board_.height(); ++y) {
         for (std::size_t x = 0; x < board_.width(); ++x) {
 
@@ -234,10 +247,24 @@ void Game::draw() const {
                 }
                 break;
             }
-            case GameState::Falling:
-                draw_regular_cell(x, y);//DEBAG 
+            case GameState::Falling: {
+                bool is_falling = false;
+                for (auto& cell : falling_cells) {
+                    if (cell.to.x == x && cell.to.y == y) {
+                        is_falling = true;
+                        if (draw_fallen_cell(cell)) {
+                            falling_cells_animation_complete_amount++;
+                        }
+                    }
+                }
+                if (!is_falling) {
+                    draw_regular_cell(x, y);
+                }
+                if (falling_cells_animation_complete_amount == falling_cells.size()) {
+                    old_falling_complete = true;
+                }
                 break;
-
+            }
             case GameState::Filling:
                 draw_regular_cell(x, y);//DEBAG 
                 break;
@@ -322,6 +349,41 @@ void Game::draw_removing_cell(std::size_t x, std::size_t y) const {
     };
     Color color = Fade(colorForTile(board_.at(x, y)), 1.0 - progress); //прозрачность
     DrawRectangleRounded(cell, 0.28F, 8, color);
+}
+
+bool Game::draw_fallen_cell(FallMove fall_cell) const{
+    const int px = kBoardOffsetX + static_cast<int>(fall_cell.from.x) * kCellSize;
+    int py = 0;
+
+    const int py_start = kBoardOffsetY + static_cast<int>(fall_cell.from.y) * kCellSize;
+    const int py_end = kBoardOffsetY + static_cast<int>(fall_cell.to.y) * kCellSize;
+
+
+    bool is_animation_complete = false;
+    // *animation_duration.fall_speed_pix_pro_sec;
+    int py_shift = animation_timer * animation_duration.fall_speed_pix_pro_sec;
+    //std::cout << "animation_timer = " << animation_timer << std::endl;
+    //std::cout << " animation_duration.fall_speed_pix_pro_sec = " << animation_duration.fall_speed_pix_pro_sec << std::endl;
+    //std::cout << "py_shift = " << py_shift << std::endl;
+
+    if (py_start + py_shift >= py_end) {
+        is_animation_complete = true;
+        py = py_end;
+    }
+    else {
+        py = py_start + py_shift;
+    }
+
+    //std::cout << "fall: x = " << fall_cell.to.x << " y = " << fall_cell.to.y << " py = "<< py << std::endl;
+
+    const Rectangle cell{
+        static_cast<float>(px + space_near_cell),
+        static_cast<float>(py + space_near_cell),
+        static_cast<float>(kCellSize - space_near_cell * 2),
+        static_cast<float>(kCellSize - space_near_cell * 2),
+    };
+    DrawRectangleRounded(cell, 0.28F, 8, colorForTile(fall_cell.tile));
+    return is_animation_complete;
 }
 
 
