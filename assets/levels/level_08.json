@@ -1,0 +1,14 @@
+{
+  "id": 8,
+  "name": "Four Targets",
+  "width": 9,
+  "height": 9,
+  "colors": 6,
+  "moves": 27,
+  "goals": [
+    { "color": "Red", "amount": 15 },
+    { "color": "Green", "amount": 15 },
+    { "color": "Blue", "amount": 15 },
+    { "color": "Purple", "amount": 15 }
+  ]
+}
