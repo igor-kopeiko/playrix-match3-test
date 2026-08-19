@@ -6,7 +6,9 @@ using json = nlohmann::json;
 
 
 namespace match3 {
-App::App() 
+App::App(int screenWidth, int screenHeight)
+    : screenWidth{ screenWidth },
+    screenHeight{ screenHeight }
 {
 
     create_level_filenames_vec();
@@ -95,13 +97,9 @@ void App::update_level_select() {
 }
 
 void App::start_level(std::size_t i) {
-    //int kBoardOffsetX, int kBoardOffsetY, int kCellSize, int space_near_cell, std::size_t cell_amount_x, std::size_t cell_amount_y
-    //levels_data[i].height
-    int space_near_cell = 4;
-    int kCellSize = 64;
-    int kBoardOffsetY = 64;
-    int kBoardOffsetX = 44;
-    game_ = std::make_unique<Game>(kBoardOffsetX, kBoardOffsetY, kCellSize, space_near_cell, levels_data[i].width, levels_data[i].height);
+
+
+    game_ = std::make_unique<Game>(levels_data[i], screenWidth, screenHeight);
     state_ = AppState::Playing;
 }
 

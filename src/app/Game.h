@@ -39,14 +39,26 @@ struct Animation_duration {
 
 
 
-//struct LevelConfig {
-//    std::size_t width;
-//    std::size_t height;
-//};
+struct LevelGoal {
+    Tile color;
+    int amount;
+};
+
+struct LevelConfig {
+    int id;
+    std::string name;
+
+    int width;
+    int height;
+    int colors_count;
+    int moves;
+
+    std::vector<LevelGoal> goals;
+};
 
 class Game {
 public:
-    Game(int kBoardOffsetX, int kBoardOffsetY, int kCellSize, int space_near_cell, std::size_t cell_amount_x, std::size_t cell_amount_y);
+    Game(LevelConfig level_config, int screenWidth, int screenHeight);
     void tick();
 
 private:
@@ -69,14 +81,22 @@ private:
     void draw_removing_cell(std::size_t x, std::size_t y) const;
     void draw_fallen_cell(FallMove fall_cell) const;
 
-    const int kBoardOffsetX; //отступ первой ячейки от края
-    const int kBoardOffsetY;
+    LevelConfig level_config;
 
-    const int kCellSize;
-    const int space_near_cell; //то же самое что расстояние между клетками/2
+    const int screenWidth;
+    const int screenHeight;
 
-    const std::size_t cell_amount_x;
-    const std::size_t cell_amount_y;
+
+
+    int kBoardOffsetX; //отступ первой ячейки от края
+    int kBoardOffsetY;
+
+    int kCellSize_x;
+    int kCellSize_y;
+    int space_near_cell; //то же самое что расстояние между клетками/2
+
+    //std::size_t cell_amount_x;
+    //std::size_t cell_amount_y;
 
     //вернет индексы выбранной клетки
     std::optional<Position> get_chosen_cell(Vector2 mouse);
@@ -86,7 +106,7 @@ private:
     
 
     //LevelConfig level_{8, 8}; //пока оставим дефолт
-    Board board_{ cell_amount_x, cell_amount_y, 42 };
+    Board board_;//{ cell_amount_x, cell_amount_y, 42 };
     
     std::optional<Position> first_selected_cell = std::nullopt;
 
@@ -104,6 +124,9 @@ private:
 
     std::vector<FallMove> falling_cells;
     float max_falling_time = 0.0;
+
+
+
 
 };
 

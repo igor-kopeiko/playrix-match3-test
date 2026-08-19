@@ -9,29 +9,14 @@ enum class AppState {
 	Playing
 };
 
-struct LevelGoal {
-	Tile color;
-	int amount;
-};
 
-struct LevelConfig {
-	int id;
-	std::string name;
-
-	int width;
-	int height;
-	int colors_count;
-	int moves;
-
-	std::vector<LevelGoal> goals;
-};
 
 
 
 
 class App {
 public:
-	App();
+	App(int screenWidth, int screenHeight);
 
 
 
@@ -61,6 +46,9 @@ private:
 	void draw_level_select() const;
 	Rectangle get_level_button_rect(std::size_t i) const;
 	void start_level(std::size_t i);
+
+	const int screenWidth;
+	const int screenHeight;
 
 
 };

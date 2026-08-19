@@ -25,18 +25,35 @@ Color colorForTile(const Tile tile) {
 
 } // namespace
 
-//Game::Game() = default;
-Game::Game(int kBoardOffsetX, int kBoardOffsetY, int kCellSize, int space_near_cell, std::size_t cell_amount_x, std::size_t cell_amount_y)
-    : kBoardOffsetX{ kBoardOffsetX },
-    kBoardOffsetY{ kBoardOffsetY },
-    kCellSize{ kCellSize },
-    space_near_cell{ space_near_cell },
-    cell_amount_x{ cell_amount_x },
-    cell_amount_y{ cell_amount_y }
+
+Game::Game(LevelConfig level_config, int screenWidth, int screenHeight)
+    : level_config{ level_config },
+    screenWidth{ screenWidth },
+    screenHeight{ screenHeight },
+    board_{ (std::size_t)level_config.width, (std::size_t)level_config.height, 42 }
 {
+
+    std::cout << "Game created" << std::endl;
+
     animation_duration.swapping = 0.2;
     animation_duration.removing = 0.2;
     animation_duration.fall_speed_pix_pro_sec = 500.0;
+
+    //Game сам вычисляет :
+    //    -cell_size
+    //    - board_offset_x
+    //    - board_offset_y
+
+    kBoardOffsetX = 44; //отступ первой ячейки от края
+    kBoardOffsetY = 64;
+
+    kCellSize_x = (screenWidth - kBoardOffsetX * 2) / level_config.width;
+
+    kCellSize_y = (screenHeight - kBoardOffsetY * 2) / level_config.height;
+    space_near_cell = 4; //то же самое что расстояние между клетками/2
+
+    //cell_amount_x = level_config.width;
+    //cell_amount_y = level_config.height;
 }
 
 
@@ -156,8 +173,8 @@ void Game::update_removing() {
         //Вычислим самый долгое по времени падение
         int max_dist = 0;
         for (auto& elem : falling_cells) {
-            int py_start = kBoardOffsetY + static_cast<int>(elem.from.y) * kCellSize;
-            int py_end = kBoardOffsetY + static_cast<int>(elem.to.y) * kCellSize;
+            int py_start = kBoardOffsetY + static_cast<int>(elem.from.y) * kCellSize_y;
+            int py_end = kBoardOffsetY + static_cast<int>(elem.to.y) * kCellSize_y;
             int dist = py_end - py_start;
             if (dist > max_dist) {
                 max_dist = dist;
@@ -212,8 +229,8 @@ void Game::draw() const {
     BeginScissorMode(
         kBoardOffsetX,
         kBoardOffsetY,
-        static_cast<int>(board_.width()) * kCellSize,
-        static_cast<int>(board_.height()) * kCellSize
+        static_cast<int>(board_.width()) * kCellSize_x,
+        static_cast<int>(board_.height()) * kCellSize_y
     );
     for (std::size_t y = 0; y < board_.height(); ++y) {
         for (std::size_t x = 0; x < board_.width(); ++x) {
@@ -322,22 +339,22 @@ void Game::draw() const {
 }
 
 void Game::draw_regular_cell(std::size_t x, std::size_t y) const {
-    const int px = kBoardOffsetX + static_cast<int>(x) * kCellSize;
-    const int py = kBoardOffsetY + static_cast<int>(y) * kCellSize;
+    const int px = kBoardOffsetX + static_cast<int>(x) * kCellSize_x;
+    const int py = kBoardOffsetY + static_cast<int>(y) * kCellSize_y;
 
     const Rectangle cell{
         static_cast<float>(px + space_near_cell),
         static_cast<float>(py + space_near_cell),
-        static_cast<float>(kCellSize - space_near_cell * 2),
-        static_cast<float>(kCellSize - space_near_cell * 2),
+        static_cast<float>(kCellSize_x - space_near_cell * 2),
+        static_cast<float>(kCellSize_y - space_near_cell * 2),
     };
     if (first_selected_cell) { //если выбрана клетка
         if (first_selected_cell->x == x && first_selected_cell->y == y) { //если это текущая отрисовка
             const Rectangle border_cell{
                 static_cast<float>(px),
                 static_cast<float>(py),
-                static_cast<float>(kCellSize),
-                static_cast<float>(kCellSize),
+                static_cast<float>(kCellSize_x),
+                static_cast<float>(kCellSize_y),
             };
 
             DrawRectangleRounded(border_cell, 0.28F, 8, WHITE);
@@ -347,8 +364,8 @@ void Game::draw_regular_cell(std::size_t x, std::size_t y) const {
 }
 
 void Game::draw_swapping_cell(std::size_t x, std::size_t y) const {
-    const int px = kBoardOffsetX + static_cast<int>(x) * kCellSize;
-    const int py = kBoardOffsetY + static_cast<int>(y) * kCellSize;
+    const int px = kBoardOffsetX + static_cast<int>(x) * kCellSize_x;
+    const int py = kBoardOffsetY + static_cast<int>(y) * kCellSize_y;
 
     int shift_px = 0;
     int shift_py = 0;
@@ -356,27 +373,27 @@ void Game::draw_swapping_cell(std::size_t x, std::size_t y) const {
     float progress = animation_timer / animation_duration.swapping;
 
     if (x == swapping_poses.first.x && y == swapping_poses.first.y) { //если это первая клетка
-        shift_px = progress * (float)kCellSize * swapping_shift.x;
-        shift_py = progress * (float)kCellSize * swapping_shift.y;
+        shift_px = progress * (float)kCellSize_x * swapping_shift.x;
+        shift_py = progress * (float)kCellSize_y * swapping_shift.y;
     }
     else {
         //здесь добавляем -1 потому что в противоположную сторону
-        shift_px = progress * (float)kCellSize * swapping_shift.x * -1;
-        shift_py = progress * (float)kCellSize * swapping_shift.y * -1;
+        shift_px = progress * (float)kCellSize_x * swapping_shift.x * -1;
+        shift_py = progress * (float)kCellSize_y * swapping_shift.y * -1;
     }
     const Rectangle cell{
         static_cast<float>(px + space_near_cell + shift_px),
         static_cast<float>(py + space_near_cell + shift_py),
-        static_cast<float>(kCellSize - space_near_cell * 2),
-        static_cast<float>(kCellSize - space_near_cell * 2),
+        static_cast<float>(kCellSize_x - space_near_cell * 2),
+        static_cast<float>(kCellSize_y - space_near_cell * 2),
     };
     DrawRectangleRounded(cell, 0.28F, 8, colorForTile(board_.at(x, y)));
 }
 
 void Game::draw_removing_cell(std::size_t x, std::size_t y) const {
     //Делает прозрачность
-    const int px = kBoardOffsetX + static_cast<int>(x) * kCellSize;
-    const int py = kBoardOffsetY + static_cast<int>(y) * kCellSize;
+    const int px = kBoardOffsetX + static_cast<int>(x) * kCellSize_x;
+    const int py = kBoardOffsetY + static_cast<int>(y) * kCellSize_y;
 
     int shift_px = 0;
     int shift_py = 0;
@@ -386,19 +403,19 @@ void Game::draw_removing_cell(std::size_t x, std::size_t y) const {
     const Rectangle cell{
         static_cast<float>(px + space_near_cell + shift_px),
         static_cast<float>(py + space_near_cell + shift_py),
-        static_cast<float>(kCellSize - space_near_cell * 2),
-        static_cast<float>(kCellSize - space_near_cell * 2),
+        static_cast<float>(kCellSize_x - space_near_cell * 2),
+        static_cast<float>(kCellSize_y - space_near_cell * 2),
     };
     Color color = Fade(colorForTile(board_.at(x, y)), 1.0 - progress); //прозрачность
     DrawRectangleRounded(cell, 0.28F, 8, color);
 }
 
 void Game::draw_fallen_cell(FallMove fall_cell) const{
-    const int px = kBoardOffsetX + static_cast<int>(fall_cell.from.x) * kCellSize;
+    const int px = kBoardOffsetX + static_cast<int>(fall_cell.from.x) * kCellSize_x;
     int py = 0;
 
-    const int py_start = kBoardOffsetY + static_cast<int>(fall_cell.from.y) * kCellSize;
-    const int py_end = kBoardOffsetY + static_cast<int>(fall_cell.to.y) * kCellSize;
+    const int py_start = kBoardOffsetY + static_cast<int>(fall_cell.from.y) * kCellSize_y;
+    const int py_end = kBoardOffsetY + static_cast<int>(fall_cell.to.y) * kCellSize_y;
 
     bool is_animation_complete = false;
     int py_shift = animation_timer * animation_duration.fall_speed_pix_pro_sec;
@@ -413,8 +430,8 @@ void Game::draw_fallen_cell(FallMove fall_cell) const{
     const Rectangle cell{
         static_cast<float>(px + space_near_cell),
         static_cast<float>(py + space_near_cell),
-        static_cast<float>(kCellSize - space_near_cell * 2),
-        static_cast<float>(kCellSize - space_near_cell * 2),
+        static_cast<float>(kCellSize_x - space_near_cell * 2),
+        static_cast<float>(kCellSize_y - space_near_cell * 2),
     };
     DrawRectangleRounded(cell, 0.28F, 8, colorForTile(fall_cell.tile));
 }
@@ -427,12 +444,12 @@ void Game::draw_fallen_cell(FallMove fall_cell) const{
 std::optional<Position> Game::get_chosen_cell(Vector2 mouse) {
 
     //считаем входит ли мышка на поле
-    int right_border = kBoardOffsetX + cell_amount_x * kCellSize;
+    int right_border = kBoardOffsetX + level_config.width * kCellSize_x;
     if (mouse.x < kBoardOffsetX || mouse.x >= right_border) {
         std::cout << "Clicked missed" << std::endl;
         return std::nullopt;
     }
-    int lower_border = kBoardOffsetY + cell_amount_y * kCellSize;
+    int lower_border = kBoardOffsetY + level_config.height * kCellSize_y;
     if (mouse.y < kBoardOffsetY || mouse.y >= lower_border) {
         std::cout << "Clicked missed" << std::endl;
         return std::nullopt;
@@ -442,8 +459,8 @@ std::optional<Position> Game::get_chosen_cell(Vector2 mouse) {
     std::size_t local_mouse_x = mouse.x - kBoardOffsetX;
     std::size_t local_mouse_y = mouse.y - kBoardOffsetY;
 
-    int x = local_mouse_x / kCellSize;
-    int y = local_mouse_y / kCellSize;
+    int x = local_mouse_x / kCellSize_x;
+    int y = local_mouse_y / kCellSize_y;
 
     std::cout << "Clicked on border: x = " << x << " y = " << y << std::endl;
 

@@ -63,10 +63,7 @@ int main() {
     InitWindow(screenWidth, screenHeight, "Match-3");
     SetTargetFPS(30);
 
-    //match3::Game game(x_offset, y_offset, cell_size, space_near_cell, cell_amount_x, cell_amount_y);
-    //g_game = &game;
-
-    match3::App app;
+    match3::App app(screenWidth, screenHeight);
     g_app = &app;
 
 #ifdef __EMSCRIPTEN__
