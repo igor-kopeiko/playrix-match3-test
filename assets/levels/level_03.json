@@ -1,0 +1,13 @@
+{
+  "id": 3,
+  "name": "Three Colors",
+  "width": 8,
+  "height": 8,
+  "colors": 4,
+  "moves": 20,
+  "goals": [
+    { "color": "Red", "amount": 12 },
+    { "color": "Green", "amount": 12 },
+    { "color": "Blue", "amount": 12 }
+  ]
+}
