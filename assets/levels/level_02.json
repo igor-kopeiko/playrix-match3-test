@@ -1,0 +1,12 @@
+{
+  "id": 2,
+  "name": "Green Start",
+  "width": 8,
+  "height": 8,
+  "colors": 4,
+  "moves": 18,
+  "goals": [
+    { "color": "Green", "amount": 18 },
+    { "color": "Yellow", "amount": 12 }
+  ]
+}
