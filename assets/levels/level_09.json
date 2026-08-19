@@ -1,0 +1,13 @@
+{
+  "id": 9,
+  "name": "Big Board",
+  "width": 10,
+  "height": 10,
+  "colors": 6,
+  "moves": 30,
+  "goals": [
+    { "color": "Red", "amount": 25 },
+    { "color": "Yellow", "amount": 22 },
+    { "color": "Orange", "amount": 22 }
+  ]
+}
