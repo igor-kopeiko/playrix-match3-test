@@ -66,6 +66,14 @@ target_link_libraries(match3 PRIVATE
 )
 target_include_directories(match3 PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
+# Desktop development builds read assets directly from the source tree.
+# This allows level JSON files to be hot-reloaded without copying them.
+if(NOT EMSCRIPTEN)
+    target_compile_definitions(match3 PRIVATE
+        MATCH3_ASSETS_DIR="${CMAKE_CURRENT_SOURCE_DIR}/assets"
+    )
+endif()
+
 if(EMSCRIPTEN)
     set_target_properties(match3 PROPERTIES SUFFIX ".html")
     target_link_options(match3 PRIVATE
