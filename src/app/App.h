@@ -31,7 +31,7 @@ struct LevelConfig {
 
 class App {
 public:
-	App(int kBoardOffsetX, int kBoardOffsetY, int kCellSize, int space_near_cell, std::size_t cell_amount_x, std::size_t cell_amount_y);
+	App();
 
 
 
@@ -41,6 +41,8 @@ public:
 	void level_select_tick();
 
 	void try_load_levels();
+
+	void update_level_select();
 	
 
 	LevelConfig load_level_cfg_file(std::string path);
@@ -57,8 +59,8 @@ private:
 
 	void create_level_filenames_vec();
 	void draw_level_select() const;
-
-
+	Rectangle get_level_button_rect(std::size_t i) const;
+	void start_level(std::size_t i);
 
 
 };

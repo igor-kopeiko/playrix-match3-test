@@ -66,7 +66,7 @@ int main() {
     //match3::Game game(x_offset, y_offset, cell_size, space_near_cell, cell_amount_x, cell_amount_y);
     //g_game = &game;
 
-    match3::App app(x_offset, y_offset, cell_size, space_near_cell, cell_amount_x, cell_amount_y);
+    match3::App app;
     g_app = &app;
 
 #ifdef __EMSCRIPTEN__

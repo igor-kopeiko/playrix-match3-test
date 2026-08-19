@@ -6,9 +6,9 @@ using json = nlohmann::json;
 
 
 namespace match3 {
-App::App(int kBoardOffsetX, int kBoardOffsetY, int kCellSize, int space_near_cell, std::size_t cell_amount_x, std::size_t cell_amount_y) 
+App::App() 
 {
-	//game_ = std::make_unique<Game>(kBoardOffsetX, kBoardOffsetY, kCellSize, space_near_cell, cell_amount_x, cell_amount_y);
+
     create_level_filenames_vec();
     std::cout << "App created " << std::endl;
 }
@@ -50,8 +50,13 @@ void App::tick() {
 }
 
 void App::level_select_tick() {
+    //загружает уровни если обновились
 	try_load_levels();
 
+    update_level_select();
+
+
+    //отрисовка
 	draw_level_select();
 
 }
@@ -63,7 +68,7 @@ void App::try_load_levels() {
 		if (time != level_write_times_[i]) {
 			//значит надо перезаписать уровень
 			levels_data[i] = load_level_cfg_file(filenames[i]);
-            std::cout << "loaded " << filenames[i]  << std::endl;
+            //std::cout << "loaded " << filenames[i]  << std::endl;
         }
         else {
             //std::cout << "not loaded " << filenames[i] << std::endl;
@@ -71,10 +76,34 @@ void App::try_load_levels() {
 	}
 }
 
-//void draw_level_select() {
-//	//отрисовка меню
-//	Color background = Color{ 24, 27, 36, 255 };
-//}
+void App::update_level_select() {
+    //обработка нажатий мыши
+    if (!IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        return;
+    }
+
+    Vector2 mouse = GetMousePosition();
+
+    for (std::size_t i = 0; i < levels_data.size(); ++i) {
+        Rectangle button = get_level_button_rect(i);
+
+        if (CheckCollisionPointRec(mouse, button)) {
+            start_level(i);
+            return;
+        }
+    }
+}
+
+void App::start_level(std::size_t i) {
+    //int kBoardOffsetX, int kBoardOffsetY, int kCellSize, int space_near_cell, std::size_t cell_amount_x, std::size_t cell_amount_y
+    //levels_data[i].height
+    int space_near_cell = 4;
+    int kCellSize = 64;
+    int kBoardOffsetY = 64;
+    int kBoardOffsetX = 44;
+    game_ = std::make_unique<Game>(kBoardOffsetX, kBoardOffsetY, kCellSize, space_near_cell, levels_data[i].width, levels_data[i].height);
+    state_ = AppState::Playing;
+}
 
 void App::draw_level_select() const
 {
@@ -104,6 +133,7 @@ void App::draw_level_select() const
     const Vector2 mouse = GetMousePosition();
 
     for (std::size_t i = 0; i < levels_data.size(); ++i) {
+        Rectangle button = get_level_button_rect(i);
         const int row = static_cast<int>(i) / columns;
         const int column = static_cast<int>(i) % columns;
 
@@ -111,12 +141,12 @@ void App::draw_level_select() const
 
         const int y = start_y + row * (button_height + gap_y);
 
-        const Rectangle button{
-            static_cast<float>(x),
-            static_cast<float>(y),
-            static_cast<float>(button_width),
-            static_cast<float>(button_height)
-        };
+        //const Rectangle button{
+        //    static_cast<float>(x),
+        //    static_cast<float>(y),
+        //    static_cast<float>(button_width),
+        //    static_cast<float>(button_height)
+        //};
 
         const bool hovered =
             CheckCollisionPointRec(mouse, button);
@@ -127,6 +157,8 @@ void App::draw_level_select() const
             button_color = Color{ 75, 85, 110, 255 };
         }
 
+        
+
         DrawRectangleRounded(
             button,
             0.2f,
@@ -134,13 +166,6 @@ void App::draw_level_select() const
             button_color
         );
 
-        //DrawRectangleRoundedLines(
-        //    button,
-        //    0.2f,
-        //    8,
-        //    2.0f,
-        //    RAYWHITE
-        //);
         DrawRectangleRoundedLines(
             button,
             0.2f,
@@ -180,6 +205,33 @@ void App::draw_level_select() const
     }
 
     EndDrawing();
+}
+
+Rectangle App::get_level_button_rect(std::size_t i) const
+{
+    constexpr int columns = 5;
+    constexpr int button_width = 90;
+    constexpr int button_height = 70;
+    constexpr int gap_x = 15;
+    constexpr int gap_y = 20;
+    constexpr int start_x = 40;
+    constexpr int start_y = 110;
+
+    const int row = static_cast<int>(i) / columns;
+    const int column = static_cast<int>(i) % columns;
+
+    const int x =
+        start_x + column * (button_width + gap_x);
+
+    const int y =
+        start_y + row * (button_height + gap_y);
+
+    return Rectangle{
+        static_cast<float>(x),
+        static_cast<float>(y),
+        static_cast<float>(button_width),
+        static_cast<float>(button_height)
+    };
 }
 
 LevelConfig App::load_level_cfg_file(std::string path) {
