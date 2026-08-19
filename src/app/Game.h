@@ -29,6 +29,13 @@ struct Swapping_poses {
     Position second;
 };
 
+struct Animation_duration {
+    float swapping = 1.0; //back_swapping выполняется то же время
+    float removig = 1.0;
+    //float back_swapping = 1.0;
+
+};
+
 //struct LevelConfig {
 //    std::size_t width;
 //    std::size_t height;
@@ -44,6 +51,7 @@ private:
 
     void update_idle();
     void update_swapping();
+    void update_back_swapping();
     void update_removing();
     void update_falling();
     void update_filling();
@@ -83,6 +91,8 @@ private:
     float animation_timer = 0.0;
 
     Swapping_shift swapping_shift{};
+
+    Animation_duration animation_duration{};
 
 };
 

@@ -54,6 +54,7 @@ void Game::update() {
         break;
         
     case GameState::BackSwapping:
+        update_back_swapping();
         break;
 
     case GameState::Removing:
@@ -133,20 +134,31 @@ void Game::update_idle() {
 }
 
 void Game::update_swapping() {
-    float time_to_animate = 1.0; //время сколько длится анимация
 
     animation_timer += GetFrameTime();
 
-    if (animation_timer > time_to_animate) {
-        time_to_animate = 0.0; //сброс таймера
+    if (animation_timer >= animation_duration.swapping) {
+        
         //проверяем законной ли была смена
         if (board_.try_match_swap(swapping_poses.first, swapping_poses.second)) {
+            animation_timer = 0.0; //сброс таймера только если нет back swapping
             current_game_state = GameState::Removing;
+            
         }
         else {
             //значит нужно вернуть все обратно
             current_game_state = GameState::BackSwapping;
         }
+    }
+}
+
+void Game::update_back_swapping() {
+    //этот метод работает по принципу уменьшения таймера
+    animation_timer -= GetFrameTime();
+
+    if (animation_timer <= 0.0) {
+        animation_timer = 0.0; //сброс таймера
+        current_game_state = GameState::Idle;
     }
 }
 
@@ -180,7 +192,18 @@ void Game::draw() const {
                     draw_regular_cell(x, y);
                 }
                 break;
-            }
+            case GameState::BackSwapping:
+                if (swapping_poses.first.x == x && swapping_poses.first.y == y) {
+                    draw_swapping_cell(x, y);
+                }
+                else if (swapping_poses.second.x == x && swapping_poses.second.y == y) {
+                    draw_swapping_cell(x, y);
+                }
+                else {
+                    draw_regular_cell(x, y);
+                }
+                break;
+            } //switch
 
 
 
@@ -221,14 +244,17 @@ void Game::draw_swapping_cell(std::size_t x, std::size_t y) const {
 
     int shift_px = 0;
     int shift_py = 0;
+
+    float progress = animation_timer / animation_duration.swapping;
+
     if (x == swapping_poses.first.x && y == swapping_poses.first.y) { //если это первая клетка
-        shift_px = animation_timer * (float)kCellSize * swapping_shift.x;
-        shift_py = animation_timer * (float)kCellSize * swapping_shift.y;
+        shift_px = progress * (float)kCellSize * swapping_shift.x;
+        shift_py = progress * (float)kCellSize * swapping_shift.y;
     }
     else {
         //здесь добавляем -1 потому что в противоположную сторону
-        shift_px = animation_timer * (float)kCellSize * swapping_shift.x * -1;
-        shift_py = animation_timer * (float)kCellSize * swapping_shift.y * -1;
+        shift_px = progress * (float)kCellSize * swapping_shift.x * -1;
+        shift_py = progress * (float)kCellSize * swapping_shift.y * -1;
     }
     const Rectangle cell{
         static_cast<float>(px + space_near_cell + shift_px),
