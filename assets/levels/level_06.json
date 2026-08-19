@@ -1,0 +1,13 @@
+{
+  "id": 6,
+  "name": "Wide Board",
+  "width": 9,
+  "height": 8,
+  "colors": 5,
+  "moves": 24,
+  "goals": [
+    { "color": "Red", "amount": 20 },
+    { "color": "Green", "amount": 20 },
+    { "color": "Purple", "amount": 15 }
+  ]
+}
