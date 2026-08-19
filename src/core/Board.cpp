@@ -442,7 +442,7 @@ void Board::shuffle() {
 }
 
 void Board::shuffle_until_possible_solution() {
-    while (!has_possible_moves()) {
+    while (!has_possible_moves() || !find_matches().empty()) {
         shuffle();
     }
 }
