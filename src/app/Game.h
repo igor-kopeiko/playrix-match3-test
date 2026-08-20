@@ -7,6 +7,7 @@
 #include <iostream>
 #include <optional>
 #include <vector>
+#include <string>
 
 namespace match3 {
 
@@ -72,7 +73,7 @@ private:
     void update_checking();
     void update_shuffling();
 
-
+    void calculate_deleted_targets();
 
 
     void draw() const;
@@ -80,6 +81,9 @@ private:
     void draw_swapping_cell(std::size_t x, std::size_t y) const;
     void draw_removing_cell(std::size_t x, std::size_t y) const;
     void draw_fallen_cell(FallMove fall_cell) const;
+    void draw_move_amount() const;
+    void draw_goals() const;
+
 
     LevelConfig level_config;
 

@@ -255,6 +255,35 @@ LevelConfig App::load_level_cfg_file(std::string path) {
 	level.colors_count = data["colors"].get<int>();
 	level.moves = data["moves"].get<int>();
 
+    //запишем цели
+    for (const auto& goal_data : data["goals"]) {
+        LevelGoal goal;
+
+        std::string color = goal_data["color"].get<std::string>();
+        goal.amount = goal_data["amount"].get<int>();
+
+        if (color == "Red") {
+            goal.color = Tile::Red;
+        }
+        else if (color == "Green") {
+            goal.color = Tile::Green;
+        }
+        else if (color == "Blue") {
+            goal.color = Tile::Blue;
+        }
+        else if (color == "Yellow") {
+            goal.color = Tile::Yellow;
+        }
+        else if (color == "Purple") {
+            goal.color = Tile::Purple;
+        }
+        else if (color == "Orange") {
+            goal.color = Tile::Orange;
+        }
+
+        level.goals.push_back(goal);
+    }
+
 	//запишем время открытия
 	auto time = std::filesystem::last_write_time(path);
 	level_write_times_[level.id - 1] = time;

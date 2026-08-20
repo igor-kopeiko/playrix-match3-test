@@ -129,6 +129,7 @@ void Game::update_swapping() {
         if (board_.try_match_swap(swapping_poses.first, swapping_poses.second)) {
             animation_timer = 0.0; //сброс таймера только если нет back swapping
             current_game_state = GameState::Removing;
+            level_config.moves--;
 
             //вычислим клетки для удаления
             //найдем клетки которые входят в матч
@@ -157,6 +158,8 @@ void Game::update_removing() {
 
     if (animation_timer >= animation_duration.removing) {
         animation_timer = 0.0; //сброс таймера
+        //записываем сколько каких цветов удалили
+        calculate_deleted_targets();
         board_.delete_cells(cells_to_remove); //окончательное удаление клеток
         current_game_state = GameState::Falling;
 
@@ -313,27 +316,29 @@ void Game::draw() const {
     EndScissorMode();
 
     //Дебаг вывод состояния
-    switch (current_game_state) {
-    case GameState::Idle:
-        DrawText("State: Idle", kBoardOffsetX, 28, 24, RAYWHITE);
-        break;
+    //switch (current_game_state) {
+    //case GameState::Idle:
+    //    DrawText("State: Idle", kBoardOffsetX, 28, 24, RAYWHITE);
+    //    break;
 
-    case GameState::Swapping:
-        DrawText("State: Swapping", kBoardOffsetX, 28, 24, RAYWHITE);
-        break;
+    //case GameState::Swapping:
+    //    DrawText("State: Swapping", kBoardOffsetX, 28, 24, RAYWHITE);
+    //    break;
 
-    case GameState::BackSwapping:
-        DrawText("State: BackSwapping", kBoardOffsetX, 28, 24, RAYWHITE);
-        break;
+    //case GameState::BackSwapping:
+    //    DrawText("State: BackSwapping", kBoardOffsetX, 28, 24, RAYWHITE);
+    //    break;
 
-    case GameState::Removing: 
-        DrawText("State: Removing", kBoardOffsetX, 28, 24, RAYWHITE);
-        break;
+    //case GameState::Removing: 
+    //    DrawText("State: Removing", kBoardOffsetX, 28, 24, RAYWHITE);
+    //    break;
 
-    case GameState::Falling: 
-        DrawText("State: Falling", kBoardOffsetX, 28, 24, RAYWHITE);
-        break;
-    }
+    //case GameState::Falling: 
+    //    DrawText("State: Falling", kBoardOffsetX, 28, 24, RAYWHITE);
+    //    break;
+    //}
+    draw_goals();
+    draw_move_amount();
 
     EndDrawing();
 }
@@ -489,6 +494,76 @@ void Game::calculate_swapping_shift() {
         }
     }
     
+}
+
+void Game::draw_move_amount() const {
+    std::string moves_str = "Moves left: ";
+    moves_str += std::to_string(level_config.moves);
+    DrawText(moves_str.c_str(), 20 , screenHeight - 30, 24, RAYWHITE);
+}
+
+void Game::draw_goals() const
+{
+    const int start_x = 20;
+    const int start_y = 20;
+
+    const int font_size = 20;
+
+    const int goal_box_size = 18;   // меньше обычной клетки
+    const int gap_after_box = 6;
+    const int gap_between_goals = 18;
+
+    int current_x = start_x;
+
+    // "Goals:"
+    DrawText(
+        "Goals:",
+        current_x,
+        start_y,
+        font_size,
+        RAYWHITE
+    );
+
+    current_x += MeasureText("Goals:", font_size) + 12;
+
+    for (const auto& goal : level_config.goals) {
+
+        const Rectangle color_box{
+            static_cast<float>(current_x),
+            static_cast<float>(start_y + 1),
+            static_cast<float>(goal_box_size),
+            static_cast<float>(goal_box_size)
+        };
+
+        DrawRectangleRounded(
+            color_box,
+            0.25f,
+            6,
+            colorForTile(goal.color)
+        );
+
+        current_x += goal_box_size + gap_after_box;
+
+        std::string amount_text = std::to_string(goal.amount);
+
+        DrawText(
+            amount_text.c_str(),
+            current_x,
+            start_y,
+            font_size,
+            RAYWHITE
+        );
+
+        current_x +=
+            MeasureText(amount_text.c_str(), font_size)
+            + gap_between_goals;
+    }
+}
+
+void Game::calculate_deleted_targets() {
+    for (auto& pos : cells_to_remove) {
+
+    }
 }
 
 
