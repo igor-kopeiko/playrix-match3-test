@@ -4,158 +4,158 @@
   "width": 8,
   "height": 8,
   "colors": 4,
-  "moves": 18,
+  "moves": 12,
   "goals": [
     { "color": "Red", "amount": 15 },
-    { "color": "Blue", "amount": 10 }
+    { "color": "Blue", "amount": 12 }
   ]
 }
 {
   "id": 2,
   "name": "Green Start",
   "width": 8,
-  "height": 8,
+  "height": 9,
   "colors": 4,
-  "moves": 18,
+  "moves": 14,
   "goals": [
-    { "color": "Green", "amount": 18 },
-    { "color": "Yellow", "amount": 12 }
+    { "color": "Green", "amount": 20 },
+    { "color": "Yellow", "amount": 16 }
   ]
 }
 {
   "id": 3,
   "name": "Three Colors",
-  "width": 8,
-  "height": 8,
+  "width": 9,
+  "height": 9,
   "colors": 4,
-  "moves": 20,
+  "moves": 16,
   "goals": [
-    { "color": "Red", "amount": 12 },
-    { "color": "Green", "amount": 12 },
-    { "color": "Blue", "amount": 12 }
+    { "color": "Red", "amount": 18 },
+    { "color": "Green", "amount": 18 },
+    { "color": "Blue", "amount": 18 }
   ]
 }
 {
   "id": 4,
   "name": "Purple Appears",
-  "width": 8,
-  "height": 8,
+  "width": 9,
+  "height": 10,
   "colors": 5,
-  "moves": 22,
+  "moves": 17,
   "goals": [
-    { "color": "Purple", "amount": 18 },
-    { "color": "Red", "amount": 15 }
+    { "color": "Purple", "amount": 24 },
+    { "color": "Red", "amount": 20 }
   ]
 }
 {
   "id": 5,
   "name": "Color Mix",
-  "width": 8,
-  "height": 8,
+  "width": 10,
+  "height": 10,
   "colors": 5,
-  "moves": 22,
+  "moves": 19,
   "goals": [
-    { "color": "Blue", "amount": 16 },
-    { "color": "Yellow", "amount": 16 },
-    { "color": "Purple", "amount": 12 }
+    { "color": "Blue", "amount": 24 },
+    { "color": "Yellow", "amount": 24 },
+    { "color": "Purple", "amount": 20 }
   ]
 }
 {
   "id": 6,
   "name": "Wide Board",
-  "width": 9,
-  "height": 8,
+  "width": 11,
+  "height": 10,
   "colors": 5,
-  "moves": 24,
+  "moves": 20,
   "goals": [
-    { "color": "Red", "amount": 20 },
-    { "color": "Green", "amount": 20 },
-    { "color": "Purple", "amount": 15 }
+    { "color": "Red", "amount": 28 },
+    { "color": "Green", "amount": 28 },
+    { "color": "Purple", "amount": 24 }
   ]
 }
 {
   "id": 7,
   "name": "Orange Rush",
-  "width": 9,
-  "height": 9,
+  "width": 11,
+  "height": 11,
   "colors": 6,
-  "moves": 25,
+  "moves": 21,
   "goals": [
-    { "color": "Orange", "amount": 20 },
-    { "color": "Blue", "amount": 18 },
-    { "color": "Yellow", "amount": 18 }
+    { "color": "Orange", "amount": 30 },
+    { "color": "Blue", "amount": 26 },
+    { "color": "Yellow", "amount": 26 }
   ]
 }
 {
   "id": 8,
   "name": "Four Targets",
-  "width": 9,
-  "height": 9,
+  "width": 12,
+  "height": 12,
   "colors": 6,
-  "moves": 27,
+  "moves": 23,
   "goals": [
-    { "color": "Red", "amount": 15 },
-    { "color": "Green", "amount": 15 },
-    { "color": "Blue", "amount": 15 },
-    { "color": "Purple", "amount": 15 }
+    { "color": "Red", "amount": 24 },
+    { "color": "Green", "amount": 24 },
+    { "color": "Blue", "amount": 24 },
+    { "color": "Purple", "amount": 24 }
   ]
 }
 {
   "id": 9,
   "name": "Big Board",
-  "width": 10,
-  "height": 10,
+  "width": 13,
+  "height": 13,
   "colors": 6,
-  "moves": 30,
+  "moves": 24,
   "goals": [
-    { "color": "Red", "amount": 25 },
-    { "color": "Yellow", "amount": 22 },
-    { "color": "Orange", "amount": 22 }
+    { "color": "Red", "amount": 36 },
+    { "color": "Yellow", "amount": 32 },
+    { "color": "Orange", "amount": 32 }
   ]
 }
 {
   "id": 10,
   "name": "Final Mix",
-  "width": 10,
-  "height": 10,
+  "width": 14,
+  "height": 14,
   "colors": 6,
-  "moves": 32,
+  "moves": 26,
   "goals": [
-    { "color": "Red", "amount": 18 },
-    { "color": "Green", "amount": 18 },
-    { "color": "Blue", "amount": 18 },
-    { "color": "Yellow", "amount": 18 },
-    { "color": "Purple", "amount": 15 },
-    { "color": "Orange", "amount": 15 }
+    { "color": "Red", "amount": 26 },
+    { "color": "Green", "amount": 26 },
+    { "color": "Blue", "amount": 26 },
+    { "color": "Yellow", "amount": 26 },
+    { "color": "Purple", "amount": 22 },
+    { "color": "Orange", "amount": 22 }
   ]
 }
 {
   "id": 11,
   "name": "Color Hunt",
-  "width": 9,
-  "height": 10,
+  "width": 15,
+  "height": 15,
   "colors": 6,
-  "moves": 30,
+  "moves": 27,
   "goals": [
-    { "color": "Red", "amount": 20 },
-    { "color": "Blue", "amount": 20 },
-    { "color": "Purple", "amount": 18 },
-    { "color": "Orange", "amount": 18 }
+    { "color": "Red", "amount": 38 },
+    { "color": "Blue", "amount": 38 },
+    { "color": "Purple", "amount": 34 },
+    { "color": "Orange", "amount": 34 }
   ]
 }
 {
   "id": 12,
   "name": "Grand Finale",
-  "width": 10,
-  "height": 10,
+  "width": 16,
+  "height": 16,
   "colors": 6,
-  "moves": 34,
+  "moves": 28,
   "goals": [
-    { "color": "Red", "amount": 20 },
-    { "color": "Green", "amount": 20 },
-    { "color": "Blue", "amount": 20 },
-    { "color": "Yellow", "amount": 20 },
-    { "color": "Purple", "amount": 18 },
-    { "color": "Orange", "amount": 18 }
+    { "color": "Red", "amount": 32 },
+    { "color": "Green", "amount": 32 },
+    { "color": "Blue", "amount": 32 },
+    { "color": "Yellow", "amount": 32 },
+    { "color": "Purple", "amount": 30 },
+    { "color": "Orange", "amount": 30 }
   ]
 }
