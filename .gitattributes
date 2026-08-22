@@ -1,0 +1,4 @@
+# Preserve Emscripten's preloaded data bundle byte-for-byte.
+# index.js contains byte offsets into index.data, so line-ending conversion
+# would corrupt every file after the first one.
+dist/index.data -text
