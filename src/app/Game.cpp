@@ -267,8 +267,6 @@ void Game::draw() const {
     BeginDrawing();
     //черный цвет
     ClearBackground(Color{24, 27, 36, 255});
-    //заголовок: текст, x, y, размер шрифта
-    //DrawText("Match-3 C++ / WebAssembly", kBoardOffsetX, 28, 24, RAYWHITE);
 
     BeginScissorMode(
         kBoardOffsetX,
@@ -359,30 +357,6 @@ void Game::draw() const {
 
     EndScissorMode();
 
-
-
-    //Дебаг вывод состояния
-    //switch (current_game_state) {
-    //case GameState::Idle:
-    //    DrawText("State: Idle", kBoardOffsetX, 28, 24, RAYWHITE);
-    //    break;
-
-    //case GameState::Swapping:
-    //    DrawText("State: Swapping", kBoardOffsetX, 28, 24, RAYWHITE);
-    //    break;
-
-    //case GameState::BackSwapping:
-    //    DrawText("State: BackSwapping", kBoardOffsetX, 28, 24, RAYWHITE);
-    //    break;
-
-    //case GameState::Removing: 
-    //    DrawText("State: Removing", kBoardOffsetX, 28, 24, RAYWHITE);
-    //    break;
-
-    //case GameState::Falling: 
-    //    DrawText("State: Falling", kBoardOffsetX, 28, 24, RAYWHITE);
-    //    break;
-    //}
     draw_goals();
     draw_move_amount();
     if (current_game_state == GameState::GameOver) {
@@ -627,54 +601,6 @@ void Game::draw_game_over() const
         RAYWHITE
     );
 }
-//
-//void Game::draw_game_over() const {
-//    const char* text =
-//        game_result_ == GameResult::Victory
-//        ? "Victory!"
-//        : "Defeat";
-//
-//    const int font_size = 40;
-//    const int text_width = MeasureText(text, font_size);
-//
-//    const int panel_width = 300;
-//    const int panel_height = 140;
-//
-//    const int x = (screenWidth - panel_width) / 2;
-//    const int y = (screenHeight - panel_height) / 2;
-//
-//    Rectangle panel{
-//        static_cast<float>(x),
-//        static_cast<float>(y),
-//        static_cast<float>(panel_width),
-//        static_cast<float>(panel_height)
-//    };
-//
-//    DrawRectangleRounded(
-//        panel,
-//        0.15f,
-//        8,
-//        Color{ 40, 45, 60, 245 }
-//    );
-//
-//    DrawRectangleRoundedLines(
-//        panel,
-//        0.15f,
-//        8,
-//        RAYWHITE
-//    );
-//
-//    DrawText(
-//        text,
-//        (screenWidth - text_width) / 2,
-//        y + 45,
-//        font_size,
-//        RAYWHITE
-//    );
-//}
-
-
-
 
 
 //=============================================
