@@ -66,6 +66,14 @@ target_link_libraries(match3 PRIVATE
 )
 target_include_directories(match3 PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
+# AddressSanitizer for MSVC Debug builds.
+# Instrument both the application and core logic, since Board.cpp lives in match3_core.
+if(MSVC)
+    target_compile_options(match3_core PRIVATE $<$<CONFIG:Debug>:/fsanitize=address>)
+    target_compile_options(match3 PRIVATE $<$<CONFIG:Debug>:/fsanitize=address>)
+    target_link_options(match3 PRIVATE $<$<CONFIG:Debug>:/fsanitize=address>)
+endif()
+
 # Desktop development builds read assets directly from the source tree.
 # This allows level JSON files to be hot-reloaded without copying them.
 if(NOT EMSCRIPTEN)
