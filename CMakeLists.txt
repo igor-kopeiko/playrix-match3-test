@@ -107,7 +107,9 @@ if(EMSCRIPTEN)
     target_link_options(match3 PRIVATE
         "-sUSE_GLFW=3"
         "-sALLOW_MEMORY_GROWTH=1"
-        "-sASSERTIONS=0"
+        "-sASSERTIONS=2"
+        "-sEXCEPTION_STACK_TRACES=1"
+        "-sDISABLE_EXCEPTION_CATCHING=0"
         "--shell-file=${CMAKE_CURRENT_SOURCE_DIR}/cmake/shell.html"
         "--preload-file"
         "${CMAKE_CURRENT_SOURCE_DIR}/assets@/assets"
