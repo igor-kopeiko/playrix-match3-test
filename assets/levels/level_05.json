@@ -1,13 +1,13 @@
 {
   "id": 5,
   "name": "Color Mix",
-  "width": 8,
-  "height": 8,
+  "width": 10,
+  "height": 10,
   "colors": 5,
-  "moves": 22,
+  "moves": 19,
   "goals": [
-    { "color": "Blue", "amount": 16 },
-    { "color": "Yellow", "amount": 16 },
-    { "color": "Purple", "amount": 12 }
+    { "color": "Blue", "amount": 24 },
+    { "color": "Yellow", "amount": 24 },
+    { "color": "Purple", "amount": 20 }
   ]
 }
