@@ -43,15 +43,51 @@ Game::Game(LevelConfig level_config, int screenWidth, int screenHeight)
     //    -cell_size
     //    - board_offset_x
     //    - board_offset_y
+    //===================================
+    //kBoardOffsetX = 44; //отступ первой ячейки от края
+    //kBoardOffsetY = 64;
 
-    kBoardOffsetX = 44; //отступ первой ячейки от края
-    kBoardOffsetY = 64;
+    //kCellSize_x = (screenWidth - kBoardOffsetX * 2) / level_config.width;
 
-    kCellSize_x = (screenWidth - kBoardOffsetX * 2) / level_config.width;
+    //kCellSize_y = (screenHeight - kBoardOffsetY * 2) / level_config.height;
+    //space_near_cell = 4; //то же самое что расстояние между клетками/2
+    //===================================
+    constexpr int vertical_margin = 64;
+    constexpr int horizontal_margin = 44;
 
-    kCellSize_y = (screenHeight - kBoardOffsetY * 2) / level_config.height;
-    space_near_cell = 4; //то же самое что расстояние между клетками/2
+    const int available_width =
+        screenWidth - horizontal_margin * 2;
 
+    const int available_height =
+        screenHeight - vertical_margin * 2;
+
+    const int cell_size_x =
+        available_width / level_config.width;
+
+    const int cell_size_y =
+        available_height / level_config.height;
+
+    const int cell_size =
+        std::min(cell_size_x, cell_size_y);
+
+    kCellSize_x = cell_size;
+    kCellSize_y = cell_size;
+
+    const int board_width =
+        cell_size * level_config.width;
+
+    const int board_height =
+        cell_size * level_config.height;
+
+    // Центрируем поле
+    kBoardOffsetX =
+        (screenWidth - board_width) / 2;
+
+    kBoardOffsetY =
+        (screenHeight - board_height) / 2;
+
+    space_near_cell = 4;
+    //=======================================
     //Загрузка текстур
     std::string tiles_path = MATCH3_ASSETS_DIR;
     tiles_path += "/tiles/";
