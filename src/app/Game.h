@@ -18,7 +18,14 @@ enum class GameState {
     Removing,   // удаляем совпавшие фишки
     Falling,    // фишки падают вниз
     Checking,     //проверка наличие match
-    Shuffling //перемешивание в случае отсуствия возможных решений
+    Shuffling, //перемешивание в случае отсуствия возможных решений
+    GameOver
+};
+
+enum class GameResult {
+    None,
+    Victory,
+    Defeat
 };
 
 struct Swapping_shift {
@@ -72,8 +79,11 @@ private:
     void update_falling();
     void update_checking();
     void update_shuffling();
+    void update_game_over();
 
     void calculate_deleted_targets();
+    bool are_all_goals_completed() const;
+    bool check_game_over();
 
 
     void draw() const;
@@ -81,8 +91,18 @@ private:
     void draw_swapping_cell(std::size_t x, std::size_t y) const;
     void draw_removing_cell(std::size_t x, std::size_t y) const;
     void draw_fallen_cell(FallMove fall_cell) const;
+    void draw_game_over() const;
+
     void draw_move_amount() const;
     void draw_goals() const;
+
+
+    
+
+    
+    
+
+    
 
 
     LevelConfig level_config;
@@ -130,6 +150,7 @@ private:
     float max_falling_time = 0.0;
 
 
+    GameResult game_result_ = GameResult::None;
 
 
 };

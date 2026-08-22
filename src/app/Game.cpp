@@ -87,8 +87,13 @@ void Game::update() {
     case GameState::Checking:
         update_checking();
         break;
+
     case GameState::Shuffling:
         update_shuffling();
+        break;
+
+    case GameState::GameOver:
+        update_game_over();
         break;
     }
 }
@@ -201,7 +206,15 @@ void Game::update_checking() {
     cells_to_remove = board_.find_matches();
     if (cells_to_remove.empty()) {
         if (board_.has_possible_moves()) {
-            current_game_state = GameState::Idle;
+
+            //проверяем завершение
+            if (check_game_over()) {
+                //завершаем игру
+                current_game_state = GameState::GameOver;
+            }
+            else {
+                current_game_state = GameState::Idle;
+            }
         }
         else {
             current_game_state = GameState::Shuffling;
@@ -218,6 +231,9 @@ void Game::update_shuffling() {
     current_game_state = GameState::Idle;
 }
 
+void Game::update_game_over() {
+    //ничего не делаем
+}
 
 
 //==========================================================
@@ -306,6 +322,9 @@ void Game::draw() const {
                 draw_regular_cell(x, y);//DEBAG 
                 break;
 
+            case GameState::GameOver:
+                draw_regular_cell(x, y);
+                break;
             } //switch
 
 
@@ -314,6 +333,8 @@ void Game::draw() const {
     }
 
     EndScissorMode();
+
+
 
     //Дебаг вывод состояния
     //switch (current_game_state) {
@@ -339,6 +360,9 @@ void Game::draw() const {
     //}
     draw_goals();
     draw_move_amount();
+    if (current_game_state == GameState::GameOver) {
+        draw_game_over();
+    }
 
     EndDrawing();
 }
@@ -439,6 +463,51 @@ void Game::draw_fallen_cell(FallMove fall_cell) const{
         static_cast<float>(kCellSize_y - space_near_cell * 2),
     };
     DrawRectangleRounded(cell, 0.28F, 8, colorForTile(fall_cell.tile));
+}
+
+void Game::draw_game_over() const {
+    const char* text =
+        game_result_ == GameResult::Victory
+        ? "Victory!"
+        : "Defeat";
+
+    const int font_size = 40;
+    const int text_width = MeasureText(text, font_size);
+
+    const int panel_width = 300;
+    const int panel_height = 140;
+
+    const int x = (screenWidth - panel_width) / 2;
+    const int y = (screenHeight - panel_height) / 2;
+
+    Rectangle panel{
+        static_cast<float>(x),
+        static_cast<float>(y),
+        static_cast<float>(panel_width),
+        static_cast<float>(panel_height)
+    };
+
+    DrawRectangleRounded(
+        panel,
+        0.15f,
+        8,
+        Color{ 40, 45, 60, 245 }
+    );
+
+    DrawRectangleRoundedLines(
+        panel,
+        0.15f,
+        8,
+        RAYWHITE
+    );
+
+    DrawText(
+        text,
+        (screenWidth - text_width) / 2,
+        y + 45,
+        font_size,
+        RAYWHITE
+    );
 }
 
 
@@ -580,6 +649,31 @@ void Game::calculate_deleted_targets(){
             }
         }
     }
+}
+
+bool Game::check_game_over() {
+    //проверим что цели выполнены
+    if (are_all_goals_completed()) {
+        game_result_ = GameResult::Victory;
+        return true;
+    }
+
+    //проверим что движения закончились
+    if (level_config.moves <= 0) {
+        game_result_ = GameResult::Defeat;
+        return true;
+    }
+
+    return false;
+}
+
+bool Game::are_all_goals_completed() const {
+    for (const auto& goal : level_config.goals) {
+        if (goal.amount > 0) {
+            return false;
+        }
+    }
+    return true;
 }
 
 
