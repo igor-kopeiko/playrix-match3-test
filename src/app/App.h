@@ -36,11 +36,13 @@ private:
 	std::unique_ptr<Game> game_;
 	AppState state_ = AppState::LevelSelect;
 
-	static constexpr std::size_t levels_amount = 10;
+
+
+	static constexpr std::size_t max_levels_amount = 20;
 
 	std::vector<std::string> filenames;
-	std::vector<std::filesystem::file_time_type> level_write_times_{ levels_amount };
-	std::vector<LevelConfig> levels_data{ levels_amount };
+	std::vector<std::filesystem::file_time_type> level_write_times_;
+	std::vector<LevelConfig> levels_data;
 
 	void create_level_filenames_vec();
 	void draw_level_select() const;

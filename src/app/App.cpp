@@ -16,23 +16,32 @@ App::App(int screenWidth, int screenHeight)
 }
 
 void App::create_level_filenames_vec() {
-    
-	for (int lvl = 1; lvl <= levels_amount; lvl++) {
+    filenames.clear();
+
+    for (std::size_t lvl = 1; lvl <= max_levels_amount; ++lvl) {
+
+        std::string lvl_str;
+
+        if (lvl < 10) {
+            lvl_str = "0" + std::to_string(lvl);
+        }
+        else {
+            lvl_str = std::to_string(lvl);
+        }
+
         std::string path = MATCH3_ASSETS_DIR;
         path += "/levels/level_";
-		std::string lvl_str;
-		if (lvl < 10) {
-			lvl_str = "0" + std::to_string(lvl);
-		}
-		else {
-			lvl_str = std::to_string(lvl);
-		}
-		path += lvl_str;
+        path += lvl_str;
         path += ".json";
 
-		filenames.push_back(path);
+        // Добавляем только реально существующие уровни
+        if (std::filesystem::exists(path)) {
+            filenames.push_back(path);
+        }
+    }
 
-	}
+    level_write_times_.resize(filenames.size());
+    levels_data.resize(filenames.size());
 }
 
 
