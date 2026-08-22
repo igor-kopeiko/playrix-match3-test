@@ -1,0 +1,161 @@
+{
+  "id": 1,
+  "name": "First Steps",
+  "width": 8,
+  "height": 8,
+  "colors": 4,
+  "moves": 18,
+  "goals": [
+    { "color": "Red", "amount": 15 },
+    { "color": "Blue", "amount": 10 }
+  ]
+}
+{
+  "id": 2,
+  "name": "Green Start",
+  "width": 8,
+  "height": 8,
+  "colors": 4,
+  "moves": 18,
+  "goals": [
+    { "color": "Green", "amount": 18 },
+    { "color": "Yellow", "amount": 12 }
+  ]
+}
+{
+  "id": 3,
+  "name": "Three Colors",
+  "width": 8,
+  "height": 8,
+  "colors": 4,
+  "moves": 20,
+  "goals": [
+    { "color": "Red", "amount": 12 },
+    { "color": "Green", "amount": 12 },
+    { "color": "Blue", "amount": 12 }
+  ]
+}
+{
+  "id": 4,
+  "name": "Purple Appears",
+  "width": 8,
+  "height": 8,
+  "colors": 5,
+  "moves": 22,
+  "goals": [
+    { "color": "Purple", "amount": 18 },
+    { "color": "Red", "amount": 15 }
+  ]
+}
+{
+  "id": 5,
+  "name": "Color Mix",
+  "width": 8,
+  "height": 8,
+  "colors": 5,
+  "moves": 22,
+  "goals": [
+    { "color": "Blue", "amount": 16 },
+    { "color": "Yellow", "amount": 16 },
+    { "color": "Purple", "amount": 12 }
+  ]
+}
+{
+  "id": 6,
+  "name": "Wide Board",
+  "width": 9,
+  "height": 8,
+  "colors": 5,
+  "moves": 24,
+  "goals": [
+    { "color": "Red", "amount": 20 },
+    { "color": "Green", "amount": 20 },
+    { "color": "Purple", "amount": 15 }
+  ]
+}
+{
+  "id": 7,
+  "name": "Orange Rush",
+  "width": 9,
+  "height": 9,
+  "colors": 6,
+  "moves": 25,
+  "goals": [
+    { "color": "Orange", "amount": 20 },
+    { "color": "Blue", "amount": 18 },
+    { "color": "Yellow", "amount": 18 }
+  ]
+}
+{
+  "id": 8,
+  "name": "Four Targets",
+  "width": 9,
+  "height": 9,
+  "colors": 6,
+  "moves": 27,
+  "goals": [
+    { "color": "Red", "amount": 15 },
+    { "color": "Green", "amount": 15 },
+    { "color": "Blue", "amount": 15 },
+    { "color": "Purple", "amount": 15 }
+  ]
+}
+{
+  "id": 9,
+  "name": "Big Board",
+  "width": 10,
+  "height": 10,
+  "colors": 6,
+  "moves": 30,
+  "goals": [
+    { "color": "Red", "amount": 25 },
+    { "color": "Yellow", "amount": 22 },
+    { "color": "Orange", "amount": 22 }
+  ]
+}
+{
+  "id": 10,
+  "name": "Final Mix",
+  "width": 10,
+  "height": 10,
+  "colors": 6,
+  "moves": 32,
+  "goals": [
+    { "color": "Red", "amount": 18 },
+    { "color": "Green", "amount": 18 },
+    { "color": "Blue", "amount": 18 },
+    { "color": "Yellow", "amount": 18 },
+    { "color": "Purple", "amount": 15 },
+    { "color": "Orange", "amount": 15 }
+  ]
+}
+{
+  "id": 11,
+  "name": "Color Hunt",
+  "width": 9,
+  "height": 10,
+  "colors": 6,
+  "moves": 30,
+  "goals": [
+    { "color": "Red", "amount": 20 },
+    { "color": "Blue", "amount": 20 },
+    { "color": "Purple", "amount": 18 },
+    { "color": "Orange", "amount": 18 }
+  ]
+}
+{
+  "id": 12,
+  "name": "Grand Finale",
+  "width": 10,
+  "height": 10,
+  "colors": 6,
+  "moves": 34,
+  "goals": [
+    { "color": "Red", "amount": 20 },
+    { "color": "Green", "amount": 20 },
+    { "color": "Blue", "amount": 20 },
+    { "color": "Yellow", "amount": 20 },
+    { "color": "Purple", "amount": 18 },
+    { "color": "Orange", "amount": 18 }
+  ]
+}

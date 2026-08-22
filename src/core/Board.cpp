@@ -271,11 +271,11 @@ void Board::bf_search_check_cell(
 bool Board::has_possible_moves(){
     for (std::size_t y = 0; y < height_; y++) {
         for (std::size_t x = 0; x < width_; x++) {
-            Position current{ x,y };
+            Position current{ static_cast<int>(x), static_cast<int>(y) };
 
             //горизонтально
             if (x > 0) {
-                Position left{ x - 1,y };
+                Position left{ static_cast<int>(x - 1),static_cast<int>(y) };
                 try_swap(current, left);
                 if (has_matches_in_area_of(current, left)) {
                     try_swap(current, left);//обратно
@@ -290,7 +290,7 @@ bool Board::has_possible_moves(){
 
             //вертикально
             if (y > 0) {
-                Position up{ x,y - 1};
+                Position up{ static_cast<int>(x),static_cast<int>(y - 1)};
                 try_swap(current, up);
                 if (has_matches_in_area_of(current, up)) {
                     try_swap(current, up); //обратно
