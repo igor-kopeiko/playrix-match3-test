@@ -79,18 +79,29 @@ void App::level_select_tick() {
 }
 
 void App::try_load_levels() {
-	//проверяем наличие уровня
-	for (int i = 0; i < filenames.size(); i++) {
+#ifdef __EMSCRIPTEN__
+    // Browser builds use Emscripten's preloaded virtual filesystem.
+    // There is no useful file hot reload there, and filesystem timestamps
+    // are not reliable/required. Load the packaged level configs once.
+    static bool levels_loaded = false;
+    if (levels_loaded) {
+        return;
+    }
+
+    for (std::size_t i = 0; i < filenames.size(); ++i) {
+        levels_data[i] = load_level_cfg_file(filenames[i]);
+    }
+
+    levels_loaded = true;
+#else
+	// Desktop: check timestamps so edited JSON level files can be hot-reloaded.
+	for (std::size_t i = 0; i < filenames.size(); ++i) {
 		auto time = std::filesystem::last_write_time(filenames[i]);
 		if (time != level_write_times_[i]) {
-			//значит надо перезаписать уровень
 			levels_data[i] = load_level_cfg_file(filenames[i]);
-            //std::cout << "loaded " << filenames[i]  << std::endl;
-        }
-        else {
-            //std::cout << "not loaded " << filenames[i] << std::endl;
         }
 	}
+#endif
 }
 
 void App::update_level_select() {
@@ -154,13 +165,6 @@ void App::draw_level_select() const
 
         const int y = start_y + row * (button_height + gap_y);
 
-        //const Rectangle button{
-        //    static_cast<float>(x),
-        //    static_cast<float>(y),
-        //    static_cast<float>(button_width),
-        //    static_cast<float>(button_height)
-        //};
-
         const bool hovered =
             CheckCollisionPointRec(mouse, button);
 
@@ -169,8 +173,6 @@ void App::draw_level_select() const
         if (hovered) {
             button_color = Color{ 75, 85, 110, 255 };
         }
-
-        
 
         DrawRectangleRounded(
             button,
@@ -199,22 +201,6 @@ void App::draw_level_select() const
             20,
             RAYWHITE
         );
-
-        //if (i < levels_data.size()) {
-        //    const std::string name =
-        //        levels_data[i].name;
-
-        //    const int name_width =
-        //        MeasureText(name.c_str(), 14);
-
-        //    DrawText(
-        //        name.c_str(),
-        //        x + (button_width - name_width) / 2,
-        //        y + 42,
-        //        14,
-        //        LIGHTGRAY
-        //    );
-        //}
     }
 
     EndDrawing();
@@ -254,7 +240,6 @@ LevelConfig App::load_level_cfg_file(std::string path) {
 	LevelConfig level;
 
 	if (!file.is_open()) {
-		// ошибка
 		level.name = "error";
 		level.id = 0;
         return level;
@@ -299,18 +284,13 @@ LevelConfig App::load_level_cfg_file(std::string path) {
         level.goals.push_back(goal);
     }
 
-	//запишем время открытия
+#ifndef __EMSCRIPTEN__
+	// Desktop only: remember the timestamp for hot reload.
 	auto time = std::filesystem::last_write_time(path);
 	level_write_times_[level.id - 1] = time;
+#endif
 
 	return level;
 }
-
-
-
-
-
-
-
 
 } // namespace match3
