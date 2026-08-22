@@ -58,8 +58,13 @@ int main() {
     const int screenHeight =
         static_cast<int>(cell_amount_y) * cell_size + y_offset*2;
 
-
+#ifndef __EMSCRIPTEN__
+    // Desktop window may be resized by the user. In the web build we keep
+    // the logical render size fixed so browser resizing does not distort
+    // or rescale the game canvas through GLFW.
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
+#endif
+
     InitWindow(screenWidth, screenHeight, "Match-3");
     SetTargetFPS(30);
 
