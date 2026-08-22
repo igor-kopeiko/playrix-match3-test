@@ -52,8 +52,27 @@ Game::Game(LevelConfig level_config, int screenWidth, int screenHeight)
     kCellSize_y = (screenHeight - kBoardOffsetY * 2) / level_config.height;
     space_near_cell = 4; //то же самое что расстояние между клетками/2
 
-    //cell_amount_x = level_config.width;
-    //cell_amount_y = level_config.height;
+    //Загрузка текстур
+    std::string tiles_path = MATCH3_ASSETS_DIR;
+    tiles_path += "/tiles/";
+
+    tile_textures_[static_cast<std::size_t>(Tile::Red)] =
+        LoadTexture((tiles_path + "red_60.png").c_str());
+
+    tile_textures_[static_cast<std::size_t>(Tile::Green)] =
+        LoadTexture((tiles_path + "green_60.png").c_str());
+
+    tile_textures_[static_cast<std::size_t>(Tile::Blue)] =
+        LoadTexture((tiles_path + "blue_60.png").c_str());
+
+    tile_textures_[static_cast<std::size_t>(Tile::Yellow)] =
+        LoadTexture((tiles_path + "yellow_60.png").c_str());
+
+    tile_textures_[static_cast<std::size_t>(Tile::Purple)] =
+        LoadTexture((tiles_path + "purple_60.png").c_str());
+
+    tile_textures_[static_cast<std::size_t>(Tile::Orange)] =
+        LoadTexture((tiles_path + "orange_60.png").c_str());
 }
 
 
@@ -366,6 +385,40 @@ void Game::draw() const {
     EndDrawing();
 }
 
+const Texture2D& Game::texture_for_tile(Tile tile) const
+{
+    return tile_textures_.at(static_cast<std::size_t>(tile));
+}
+
+void Game::draw_tile(
+    Tile tile,
+    const Rectangle& destination,
+    Color tint
+) const
+{
+    if (tile == Tile::Default) {
+        return;
+    }
+
+    const Texture2D& texture = texture_for_tile(tile);
+
+    const Rectangle source{
+        0.0f,
+        0.0f,
+        static_cast<float>(texture.width),
+        static_cast<float>(texture.height)
+    };
+
+    DrawTexturePro(
+        texture,
+        source,
+        destination,
+        Vector2{ 0.0f, 0.0f },
+        0.0f,
+        tint
+    );
+}
+
 void Game::draw_regular_cell(std::size_t x, std::size_t y) const {
     const int px = kBoardOffsetX + static_cast<int>(x) * kCellSize_x;
     const int py = kBoardOffsetY + static_cast<int>(y) * kCellSize_y;
@@ -388,7 +441,8 @@ void Game::draw_regular_cell(std::size_t x, std::size_t y) const {
             DrawRectangleRounded(border_cell, 0.28F, 8, WHITE);
         }
     }
-    DrawRectangleRounded(cell, 0.28F, 8, colorForTile(board_.at(x, y)));
+    //DrawRectangleRounded(cell, 0.28F, 8, colorForTile(board_.at(x, y))); //отрисовка просто цвета
+    draw_tile(board_.at(x, y), cell); //отрисовка текстур
 }
 
 void Game::draw_swapping_cell(std::size_t x, std::size_t y) const {
@@ -415,7 +469,8 @@ void Game::draw_swapping_cell(std::size_t x, std::size_t y) const {
         static_cast<float>(kCellSize_x - space_near_cell * 2),
         static_cast<float>(kCellSize_y - space_near_cell * 2),
     };
-    DrawRectangleRounded(cell, 0.28F, 8, colorForTile(board_.at(x, y)));
+    //DrawRectangleRounded(cell, 0.28F, 8, colorForTile(board_.at(x, y))); //отрисовка цветов
+    draw_tile(board_.at(x, y), cell); //отрисовка текстур
 }
 
 void Game::draw_removing_cell(std::size_t x, std::size_t y) const {
@@ -434,8 +489,18 @@ void Game::draw_removing_cell(std::size_t x, std::size_t y) const {
         static_cast<float>(kCellSize_x - space_near_cell * 2),
         static_cast<float>(kCellSize_y - space_near_cell * 2),
     };
-    Color color = Fade(colorForTile(board_.at(x, y)), 1.0 - progress); //прозрачность
-    DrawRectangleRounded(cell, 0.28F, 8, color);
+    //ОТРИСОВКА ЦВЕТОВ
+    //Color color = Fade(colorForTile(board_.at(x, y)), 1.0 - progress); //прозрачность
+    //DrawRectangleRounded(cell, 0.28F, 8, color);
+
+    //ОТРИСОВКА ТЕКСТУР
+    const Color tint = Fade(WHITE, 1.0f - progress);
+
+    draw_tile(
+        board_.at(x, y),
+        cell,
+        tint
+    );
 }
 
 void Game::draw_fallen_cell(FallMove fall_cell) const{
@@ -461,7 +526,8 @@ void Game::draw_fallen_cell(FallMove fall_cell) const{
         static_cast<float>(kCellSize_x - space_near_cell * 2),
         static_cast<float>(kCellSize_y - space_near_cell * 2),
     };
-    DrawRectangleRounded(cell, 0.28F, 8, colorForTile(fall_cell.tile));
+    //DrawRectangleRounded(cell, 0.28F, 8, colorForTile(fall_cell.tile)); //цвета
+    draw_tile(fall_cell.tile, cell); //текстуры
 }
 
 void Game::draw_game_over() const
@@ -759,6 +825,15 @@ bool Game::are_all_goals_completed() const {
         }
     }
     return true;
+}
+
+Game::~Game()
+{
+    for (auto& texture : tile_textures_) {
+        if (texture.id != 0) {
+            UnloadTexture(texture);
+        }
+    }
 }
 
 

@@ -8,6 +8,7 @@
 #include <optional>
 #include <vector>
 #include <string>
+#include <array>
 
 namespace match3 {
 
@@ -76,6 +77,7 @@ enum class GameAction {
 class Game {
 public:
     Game(LevelConfig level_config, int screenWidth, int screenHeight);
+    ~Game();
     void tick();
     GameAction requested_action() const;
 
@@ -109,7 +111,13 @@ private:
     void draw_goals() const;
 
 
-    
+    const Texture2D& texture_for_tile(Tile tile) const;
+
+    void draw_tile(
+        Tile tile,
+        const Rectangle& destination,
+        Color tint = WHITE
+    ) const;
 
     
     
@@ -165,7 +173,7 @@ private:
     GameResult game_result_ = GameResult::None;
     GameAction game_action_ = GameAction::None;
 
-
+    std::array<Texture2D, static_cast<std::size_t>(Tile::Count)> tile_textures_{};
 };
 
 } // namespace match3
