@@ -25,6 +25,16 @@
         "CMAKE_BUILD_TYPE": "Debug",
         "MATCH3_BUILD_TESTS": "ON"
       }
+    },
+    {
+      "name": "web-release",
+      "displayName": "Emscripten Web - Release",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/web-release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "MATCH3_BUILD_TESTS": "OFF"
+      }
     }
   ],
   "buildPresets": [
@@ -36,6 +46,11 @@
     {
       "name": "ninja-debug",
       "configurePreset": "ninja-debug"
+    },
+    {
+      "name": "web-release",
+      "configurePreset": "web-release",
+      "targets": ["match3"]
     }
   ],
   "testPresets": [
