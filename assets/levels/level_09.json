@@ -1,13 +1,13 @@
 {
   "id": 9,
   "name": "Big Board",
-  "width": 10,
-  "height": 10,
+  "width": 13,
+  "height": 13,
   "colors": 6,
-  "moves": 30,
+  "moves": 24,
   "goals": [
-    { "color": "Red", "amount": 25 },
-    { "color": "Yellow", "amount": 22 },
-    { "color": "Orange", "amount": 22 }
+    { "color": "Red", "amount": 36 },
+    { "color": "Yellow", "amount": 32 },
+    { "color": "Orange", "amount": 32 }
   ]
 }
