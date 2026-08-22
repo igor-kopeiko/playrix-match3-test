@@ -87,12 +87,30 @@ if(NOT EMSCRIPTEN)
 endif()
 
 if(EMSCRIPTEN)
-    set_target_properties(match3 PROPERTIES SUFFIX ".html")
+    # The browser cannot access the host filesystem. Emscripten packages the
+    # repository assets into its virtual filesystem at /assets.
+    target_compile_definitions(match3 PRIVATE
+        MATCH3_ASSETS_DIR="/assets"
+    )
+
+    # Produce a static-site bundle directly in dist/ so it can be published
+    # by Cloudflare Pages or any other static hosting provider.
+    set(MATCH3_WEB_DIST_DIR "${CMAKE_SOURCE_DIR}/dist")
+    file(MAKE_DIRECTORY "${MATCH3_WEB_DIST_DIR}")
+
+    set_target_properties(match3 PROPERTIES
+        SUFFIX ".html"
+        OUTPUT_NAME "index"
+        RUNTIME_OUTPUT_DIRECTORY "${MATCH3_WEB_DIST_DIR}"
+    )
+
     target_link_options(match3 PRIVATE
         "-sUSE_GLFW=3"
         "-sALLOW_MEMORY_GROWTH=1"
-        "-sASSERTIONS=1"
+        "-sASSERTIONS=0"
         "--shell-file=${CMAKE_CURRENT_SOURCE_DIR}/cmake/shell.html"
+        "--preload-file"
+        "${CMAKE_CURRENT_SOURCE_DIR}/assets@/assets"
     )
 endif()
 
