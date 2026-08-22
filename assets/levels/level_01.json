@@ -4,9 +4,9 @@
   "width": 8,
   "height": 8,
   "colors": 4,
-  "moves": 18,
+  "moves": 12,
   "goals": [
     { "color": "Red", "amount": 15 },
-    { "color": "Blue", "amount": 10 }
+    { "color": "Blue", "amount": 12 }
   ]
 }
