@@ -1,0 +1,14 @@
+{
+  "id": 11,
+  "name": "Color Hunt",
+  "width": 9,
+  "height": 10,
+  "colors": 6,
+  "moves": 30,
+  "goals": [
+    { "color": "Red", "amount": 20 },
+    { "color": "Blue", "amount": 20 },
+    { "color": "Purple", "amount": 18 },
+    { "color": "Orange", "amount": 18 }
+  ]
+}
