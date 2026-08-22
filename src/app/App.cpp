@@ -234,63 +234,112 @@ Rectangle App::get_level_button_rect(std::size_t i) const
 }
 
 LevelConfig App::load_level_cfg_file(std::string path) {
+    LevelConfig level;
+    level.name = "error";
+    level.id = 0;
 
-	std::ifstream file(path);
-
-	LevelConfig level;
-
-	if (!file.is_open()) {
-		level.name = "error";
-		level.id = 0;
+    std::ifstream file(path);
+    if (!file.is_open()) {
+        std::cerr << "Failed to open level file: " << path << std::endl;
         return level;
-	}
-
-	json data;
-	file >> data;
-
-	level.id = data["id"].get<int>();
-	level.name = data["name"].get<std::string>();
-	level.width = data["width"].get<int>();
-	level.height = data["height"].get<int>();
-	level.colors_count = data["colors"].get<int>();
-	level.moves = data["moves"].get<int>();
-
-    //запишем цели
-    for (const auto& goal_data : data["goals"]) {
-        LevelGoal goal;
-
-        std::string color = goal_data["color"].get<std::string>();
-        goal.amount = goal_data["amount"].get<int>();
-
-        if (color == "Red") {
-            goal.color = Tile::Red;
-        }
-        else if (color == "Green") {
-            goal.color = Tile::Green;
-        }
-        else if (color == "Blue") {
-            goal.color = Tile::Blue;
-        }
-        else if (color == "Yellow") {
-            goal.color = Tile::Yellow;
-        }
-        else if (color == "Purple") {
-            goal.color = Tile::Purple;
-        }
-        else if (color == "Orange") {
-            goal.color = Tile::Orange;
-        }
-
-        level.goals.push_back(goal);
     }
 
-#ifndef __EMSCRIPTEN__
-	// Desktop only: remember the timestamp for hot reload.
-	auto time = std::filesystem::last_write_time(path);
-	level_write_times_[level.id - 1] = time;
-#endif
+    try {
+        json data;
+        file >> data;
 
-	return level;
+        std::cout << "Loading level: " << path
+                  << ", root JSON type: " << data.type_name() << std::endl;
+
+        // Be tolerant of accidentally double-encoded JSON files.
+        if (data.is_string()) {
+            std::cout << "Level JSON is encoded as string, parsing inner JSON: "
+                      << path << std::endl;
+            data = json::parse(data.get<std::string>());
+        }
+
+        if (!data.is_object()) {
+            std::cerr << "Invalid level JSON root in " << path
+                      << ": expected object, got " << data.type_name() << std::endl;
+            return level;
+        }
+
+        if (!data.contains("id") || !data.contains("name") ||
+            !data.contains("width") || !data.contains("height") ||
+            !data.contains("colors") || !data.contains("moves") ||
+            !data.contains("goals")) {
+            std::cerr << "Level JSON is missing required fields: " << path << std::endl;
+            return level;
+        }
+
+        if (!data["goals"].is_array()) {
+            std::cerr << "Invalid goals in " << path
+                      << ": expected array, got " << data["goals"].type_name() << std::endl;
+            return level;
+        }
+
+        level.id = data["id"].get<int>();
+        level.name = data["name"].get<std::string>();
+        level.width = data["width"].get<int>();
+        level.height = data["height"].get<int>();
+        level.colors_count = data["colors"].get<int>();
+        level.moves = data["moves"].get<int>();
+
+        for (const auto& goal_data : data["goals"]) {
+            if (!goal_data.is_object()) {
+                std::cerr << "Invalid goal entry in " << path
+                          << ": expected object, got " << goal_data.type_name() << std::endl;
+                continue;
+            }
+
+            if (!goal_data.contains("color") || !goal_data.contains("amount")) {
+                std::cerr << "Goal entry is missing color or amount in " << path << std::endl;
+                continue;
+            }
+
+            LevelGoal goal;
+            const std::string color = goal_data["color"].get<std::string>();
+            goal.amount = goal_data["amount"].get<int>();
+
+            if (color == "Red") {
+                goal.color = Tile::Red;
+            }
+            else if (color == "Green") {
+                goal.color = Tile::Green;
+            }
+            else if (color == "Blue") {
+                goal.color = Tile::Blue;
+            }
+            else if (color == "Yellow") {
+                goal.color = Tile::Yellow;
+            }
+            else if (color == "Purple") {
+                goal.color = Tile::Purple;
+            }
+            else if (color == "Orange") {
+                goal.color = Tile::Orange;
+            }
+            else {
+                std::cerr << "Unknown goal color '" << color << "' in " << path << std::endl;
+                continue;
+            }
+
+            level.goals.push_back(goal);
+        }
+
+#ifndef __EMSCRIPTEN__
+        // Desktop only: remember the timestamp for hot reload.
+        auto time = std::filesystem::last_write_time(path);
+        level_write_times_[level.id - 1] = time;
+#endif
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Failed to parse level " << path << ": " << e.what() << std::endl;
+        level.name = "error";
+        level.id = 0;
+    }
+
+    return level;
 }
 
 } // namespace match3
