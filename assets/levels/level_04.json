@@ -1,12 +1,12 @@
 {
   "id": 4,
   "name": "Purple Appears",
-  "width": 8,
-  "height": 8,
+  "width": 9,
+  "height": 10,
   "colors": 5,
-  "moves": 22,
+  "moves": 17,
   "goals": [
-    { "color": "Purple", "amount": 18 },
-    { "color": "Red", "amount": 15 }
+    { "color": "Purple", "amount": 24 },
+    { "color": "Red", "amount": 20 }
   ]
 }
