@@ -45,6 +45,12 @@ void App::tick() {
 		
 	case AppState::Playing: {
 		game_->tick();
+        if (game_->requested_action() == match3::GameAction::ExitToMenu) {
+            state_ = AppState::LevelSelect;
+            game_.reset();
+            return;
+            
+        }
 		break;
 	}
 	}

@@ -64,10 +64,20 @@ struct LevelConfig {
     std::vector<LevelGoal> goals;
 };
 
+
+enum class GameAction {
+    None,
+    ExitToMenu,
+    Retry,
+    NextLevel
+};
+
+
 class Game {
 public:
     Game(LevelConfig level_config, int screenWidth, int screenHeight);
     void tick();
+    GameAction requested_action() const;
 
 private:
     void update();
@@ -84,6 +94,8 @@ private:
     void calculate_deleted_targets();
     bool are_all_goals_completed() const;
     bool check_game_over();
+
+    Rectangle get_exit_button_rect() const;
 
 
     void draw() const;
@@ -151,6 +163,7 @@ private:
 
 
     GameResult game_result_ = GameResult::None;
+    GameAction game_action_ = GameAction::None;
 
 
 };

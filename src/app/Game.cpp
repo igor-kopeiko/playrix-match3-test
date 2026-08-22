@@ -62,6 +62,10 @@ void Game::tick() {
     draw();
 }
 
+GameAction Game::requested_action() const {
+    return game_action_;
+}
+
 void Game::update() {
     switch (current_game_state) {
     case GameState::Idle:
@@ -232,7 +236,28 @@ void Game::update_shuffling() {
 }
 
 void Game::update_game_over() {
-    //ничего не делаем
+    
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        const Vector2 mouse = GetMousePosition();
+
+        if (CheckCollisionPointRec(mouse, get_exit_button_rect())) {
+            game_action_ = GameAction::ExitToMenu;
+        }
+    }
+
+
+}
+
+Rectangle Game::get_exit_button_rect() const {
+    constexpr float width = 180.0f;
+    constexpr float height = 45.0f;
+
+    return Rectangle{
+        (screenWidth - width) / 2.0f,
+        screenHeight / 2.0f + 40.0f,
+        width,
+        height
+    };
 }
 
 
@@ -465,33 +490,39 @@ void Game::draw_fallen_cell(FallMove fall_cell) const{
     DrawRectangleRounded(cell, 0.28F, 8, colorForTile(fall_cell.tile));
 }
 
-void Game::draw_game_over() const {
-    const char* text =
-        game_result_ == GameResult::Victory
-        ? "Victory!"
-        : "Defeat";
+void Game::draw_game_over() const
+{
+    // Затемнение поверх игрового поля
+    DrawRectangle(
+        0,
+        0,
+        screenWidth,
+        screenHeight,
+        Color{ 0, 0, 0, 140 }
+    );
 
-    const int font_size = 40;
-    const int text_width = MeasureText(text, font_size);
+    // Основная панель
+    constexpr float panel_width = 320.0f;
+    constexpr float panel_height = 220.0f;
 
-    const int panel_width = 300;
-    const int panel_height = 140;
+    const float panel_x =
+        (static_cast<float>(screenWidth) - panel_width) / 2.0f;
 
-    const int x = (screenWidth - panel_width) / 2;
-    const int y = (screenHeight - panel_height) / 2;
+    const float panel_y =
+        (static_cast<float>(screenHeight) - panel_height) / 2.0f;
 
-    Rectangle panel{
-        static_cast<float>(x),
-        static_cast<float>(y),
-        static_cast<float>(panel_width),
-        static_cast<float>(panel_height)
+    const Rectangle panel{
+        panel_x,
+        panel_y,
+        panel_width,
+        panel_height
     };
 
     DrawRectangleRounded(
         panel,
         0.15f,
         8,
-        Color{ 40, 45, 60, 245 }
+        Color{ 40, 45, 60, 255 }
     );
 
     DrawRectangleRoundedLines(
@@ -501,14 +532,146 @@ void Game::draw_game_over() const {
         RAYWHITE
     );
 
+
+    // -------------------------
+    // Victory / Defeat
+    // -------------------------
+
+    const char* result_text = "";
+
+    if (game_result_ == GameResult::Victory) {
+        result_text = "Victory!";
+    }
+    else if (game_result_ == GameResult::Defeat) {
+        result_text = "Defeat";
+    }
+
+    constexpr int result_font_size = 40;
+
+    const int result_text_width =
+        MeasureText(result_text, result_font_size);
+
     DrawText(
-        text,
-        (screenWidth - text_width) / 2,
-        y + 45,
-        font_size,
+        result_text,
+        (screenWidth - result_text_width) / 2,
+        static_cast<int>(panel_y + 35),
+        result_font_size,
+        RAYWHITE
+    );
+
+
+    // -------------------------
+    // Кнопка Level select
+    // -------------------------
+
+    const Rectangle button = get_exit_button_rect();
+
+    const Vector2 mouse = GetMousePosition();
+
+    const bool hovered =
+        CheckCollisionPointRec(mouse, button);
+
+    Color button_color{
+        55, 62, 80, 255
+    };
+
+    if (hovered) {
+        button_color = Color{
+            75, 85, 110, 255
+        };
+    }
+
+    DrawRectangleRounded(
+        button,
+        0.2f,
+        8,
+        button_color
+    );
+
+    DrawRectangleRoundedLines(
+        button,
+        0.2f,
+        8,
+        RAYWHITE
+    );
+
+
+    // -------------------------
+    // Текст кнопки
+    // -------------------------
+
+    const char* button_text = "Level select";
+
+    constexpr int button_font_size = 20;
+
+    const int button_text_width =
+        MeasureText(button_text, button_font_size);
+
+    const int button_text_x =
+        static_cast<int>(
+            button.x +
+            (button.width - button_text_width) / 2.0f
+            );
+
+    const int button_text_y =
+        static_cast<int>(
+            button.y +
+            (button.height - button_font_size) / 2.0f
+            );
+
+    DrawText(
+        button_text,
+        button_text_x,
+        button_text_y,
+        button_font_size,
         RAYWHITE
     );
 }
+//
+//void Game::draw_game_over() const {
+//    const char* text =
+//        game_result_ == GameResult::Victory
+//        ? "Victory!"
+//        : "Defeat";
+//
+//    const int font_size = 40;
+//    const int text_width = MeasureText(text, font_size);
+//
+//    const int panel_width = 300;
+//    const int panel_height = 140;
+//
+//    const int x = (screenWidth - panel_width) / 2;
+//    const int y = (screenHeight - panel_height) / 2;
+//
+//    Rectangle panel{
+//        static_cast<float>(x),
+//        static_cast<float>(y),
+//        static_cast<float>(panel_width),
+//        static_cast<float>(panel_height)
+//    };
+//
+//    DrawRectangleRounded(
+//        panel,
+//        0.15f,
+//        8,
+//        Color{ 40, 45, 60, 245 }
+//    );
+//
+//    DrawRectangleRoundedLines(
+//        panel,
+//        0.15f,
+//        8,
+//        RAYWHITE
+//    );
+//
+//    DrawText(
+//        text,
+//        (screenWidth - text_width) / 2,
+//        y + 45,
+//        font_size,
+//        RAYWHITE
+//    );
+//}
 
 
 
