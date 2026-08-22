@@ -609,12 +609,10 @@ std::optional<Position> Game::get_chosen_cell(Vector2 mouse) {
     //считаем входит ли мышка на поле
     int right_border = kBoardOffsetX + level_config.width * kCellSize_x;
     if (mouse.x < kBoardOffsetX || mouse.x >= right_border) {
-        std::cout << "Clicked missed" << std::endl;
         return std::nullopt;
     }
     int lower_border = kBoardOffsetY + level_config.height * kCellSize_y;
     if (mouse.y < kBoardOffsetY || mouse.y >= lower_border) {
-        std::cout << "Clicked missed" << std::endl;
         return std::nullopt;
     }
 
@@ -624,8 +622,6 @@ std::optional<Position> Game::get_chosen_cell(Vector2 mouse) {
 
     int x = local_mouse_x / kCellSize_x;
     int y = local_mouse_y / kCellSize_y;
-
-    std::cout << "Clicked on border: x = " << x << " y = " << y << std::endl;
 
     return Position{ x, y };
 }

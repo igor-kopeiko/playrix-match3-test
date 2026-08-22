@@ -31,7 +31,6 @@ void Board::create_board() {
             while(1){
                 //генерируем
                 Tile new_tile = randomTile();
-                std::cout << "Generated: " << (int)new_tile << '\n';
                 //проверяем соседей слева
                 if (x > 1) {
                     if (at(x - 1, y) == new_tile) { 
