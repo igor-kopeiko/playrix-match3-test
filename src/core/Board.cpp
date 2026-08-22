@@ -5,8 +5,10 @@
 
 namespace match3 {
 
-Board::Board(const std::size_t width, const std::size_t height, const std::uint32_t seed)
-    : width_(width), height_(height), tiles_(width * height), rng_(seed) {
+Board::Board(const std::size_t width, const std::size_t height, int color_amount, const std::uint32_t seed)
+    : width_(width), height_(height), tiles_(width * height), rng_(seed),
+    color_amount{ color_amount }
+{
     if (width == 0 || height == 0) {
         throw std::invalid_argument("Board dimensions must be greater than zero");
     }
@@ -15,7 +17,11 @@ Board::Board(const std::size_t width, const std::size_t height, const std::uint3
         tile = Tile::Default;//randomTile(); //Tile::Default;
     }
 
+
+
     create_board();
+
+    std::cout << "Board created" << std::endl;
 }
 
 void Board::create_board() {
@@ -25,6 +31,7 @@ void Board::create_board() {
             while(1){
                 //генерируем
                 Tile new_tile = randomTile();
+                std::cout << "Generated: " << (int)new_tile << '\n';
                 //проверяем соседей слева
                 if (x > 1) {
                     if (at(x - 1, y) == new_tile) { 
@@ -66,7 +73,7 @@ std::size_t Board::index(const std::size_t x, const std::size_t y) const {
 }
 
 Tile Board::randomTile() {
-    std::uniform_int_distribution<int> distribution(1, static_cast<int>(Tile::Count) - 1);
+    std::uniform_int_distribution<int> distribution(1, color_amount);
     return static_cast<Tile>(distribution(rng_));
 }
 

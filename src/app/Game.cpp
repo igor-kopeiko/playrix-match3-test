@@ -30,7 +30,7 @@ Game::Game(LevelConfig level_config, int screenWidth, int screenHeight)
     : level_config{ level_config },
     screenWidth{ screenWidth },
     screenHeight{ screenHeight },
-    board_{ (std::size_t)level_config.width, (std::size_t)level_config.height, 42 }
+    board_{ (std::size_t)level_config.width, (std::size_t)level_config.height, level_config.colors_count, 42 }
 {
 
     std::cout << "Game created" << std::endl;
@@ -497,8 +497,13 @@ void Game::calculate_swapping_shift() {
 }
 
 void Game::draw_move_amount() const {
+    int moves_left = level_config.moves;
+    if (moves_left < 0) {
+        moves_left = 0;
+    }
+
     std::string moves_str = "Moves left: ";
-    moves_str += std::to_string(level_config.moves);
+    moves_str += std::to_string(moves_left);
     DrawText(moves_str.c_str(), 20 , screenHeight - 30, 24, RAYWHITE);
 }
 
@@ -544,7 +549,12 @@ void Game::draw_goals() const
 
         current_x += goal_box_size + gap_after_box;
 
-        std::string amount_text = std::to_string(goal.amount);
+        int goal_amount = goal.amount;
+        if (goal_amount < 0) {
+            goal_amount = 0;
+        }
+
+        std::string amount_text = std::to_string(goal_amount);
 
         DrawText(
             amount_text.c_str(),

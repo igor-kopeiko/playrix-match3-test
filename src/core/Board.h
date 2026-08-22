@@ -21,7 +21,7 @@ struct FallMove {
 
 class Board {
 public:
-    Board(std::size_t width, std::size_t height, std::uint32_t seed = std::random_device{}());
+    Board(std::size_t width, std::size_t height, int color_amount, std::uint32_t seed = std::random_device{}());
 
     [[nodiscard]] std::size_t width() const noexcept { return width_; }
     [[nodiscard]] std::size_t height() const noexcept { return height_; }
@@ -68,6 +68,7 @@ private:
     std::size_t height_{};
     std::vector<Tile> tiles_;
     std::mt19937 rng_;
+    int color_amount;
 };
 
 } // namespace match3
