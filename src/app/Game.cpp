@@ -560,9 +560,15 @@ void Game::draw_goals() const
     }
 }
 
-void Game::calculate_deleted_targets() {
-    for (auto& pos : cells_to_remove) {
-
+void Game::calculate_deleted_targets(){
+    for (const auto& pos : cells_to_remove) {
+        //считаем какой цвет можно удалить
+        Tile color_to_remove = board_.at(pos);
+        for (auto& goal : level_config.goals) {
+            if (goal.color == color_to_remove) {
+                goal.amount--;
+            }
+        }
     }
 }
 
