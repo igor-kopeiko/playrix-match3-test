@@ -1,0 +1,16 @@
+{
+  "id": 12,
+  "name": "Grand Finale",
+  "width": 10,
+  "height": 10,
+  "colors": 6,
+  "moves": 34,
+  "goals": [
+    { "color": "Red", "amount": 20 },
+    { "color": "Green", "amount": 20 },
+    { "color": "Blue", "amount": 20 },
+    { "color": "Yellow", "amount": 20 },
+    { "color": "Purple", "amount": 18 },
+    { "color": "Orange", "amount": 18 }
+  ]
+}
