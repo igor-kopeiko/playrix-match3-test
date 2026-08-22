@@ -7,12 +7,20 @@ project(match3_web
 )
 
 option(MATCH3_BUILD_TESTS "Build unit tests" ON)
+option(MATCH3_ENABLE_ASAN "Enable AddressSanitizer" OFF)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 include(FetchContent)
+
+function(match3_enable_asan target_name)
+    if(MATCH3_ENABLE_ASAN AND MSVC AND NOT EMSCRIPTEN)
+        target_compile_options(${target_name} PRIVATE /fsanitize=address)
+        target_link_options(${target_name} PRIVATE /fsanitize=address)
+    endif()
+endfunction()
 
 # -------------------- Dependencies --------------------
 set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
@@ -52,6 +60,8 @@ else()
     target_compile_options(match3_core PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
+match3_enable_asan(match3_core)
+
 # -------------------- Application --------------------
 add_executable(match3
     src/app/main.cpp
@@ -66,13 +76,7 @@ target_link_libraries(match3 PRIVATE
 )
 target_include_directories(match3 PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-# AddressSanitizer for MSVC Debug builds.
-# Instrument both the application and core logic, since Board.cpp lives in match3_core.
-if(MSVC)
-    target_compile_options(match3_core PRIVATE $<$<CONFIG:Debug>:/fsanitize=address>)
-    target_compile_options(match3 PRIVATE $<$<CONFIG:Debug>:/fsanitize=address>)
-    target_link_options(match3 PRIVATE $<$<CONFIG:Debug>:/fsanitize=address>)
-endif()
+match3_enable_asan(match3)
 
 # Desktop development builds read assets directly from the source tree.
 # This allows level JSON files to be hot-reloaded without copying them.
@@ -108,6 +112,8 @@ if(MATCH3_BUILD_TESTS AND NOT EMSCRIPTEN)
         tests/BoardTests.cpp
     )
     target_link_libraries(match3_tests PRIVATE match3_core Catch2::Catch2WithMain)
+
+    match3_enable_asan(match3_tests)
 
     include(Catch)
     catch_discover_tests(match3_tests)
