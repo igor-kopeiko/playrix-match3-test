@@ -135,35 +135,41 @@ void App::draw_level_select() const
 
     ClearBackground(Color{ 24, 27, 36, 255 });
 
+    constexpr int title_font_size = 40;
+    const char* title = "Select level";
+
+    const int title_width =
+        MeasureText(title, title_font_size);
+
     DrawText(
-        "Select level",
-        40,
-        40,
-        32,
+        title,
+        (screenWidth - title_width) / 2,
+        45,
+        title_font_size,
         RAYWHITE
     );
 
-    constexpr int columns = 5;
+    constexpr int columns = 4;
 
-    constexpr int button_width = 90;
-    constexpr int button_height = 70;
+    constexpr int button_width = 150;
+    constexpr int button_height = 90;
 
-    constexpr int gap_x = 15;
+    constexpr int gap_x = 20;
     constexpr int gap_y = 20;
 
-    constexpr int start_x = 40;
-    constexpr int start_y = 110;
+    constexpr int start_y = 130;
+
+    const int grid_width =
+        columns * button_width +
+        (columns - 1) * gap_x;
+
+    const int start_x =
+        (screenWidth - grid_width) / 2;
 
     const Vector2 mouse = GetMousePosition();
 
     for (std::size_t i = 0; i < levels_data.size(); ++i) {
-        Rectangle button = get_level_button_rect(i);
-        const int row = static_cast<int>(i) / columns;
-        const int column = static_cast<int>(i) % columns;
-
-        const int x = start_x + column * (button_width + gap_x);
-
-        const int y = start_y + row * (button_height + gap_y);
+        const Rectangle button = get_level_button_rect(i);
 
         const bool hovered =
             CheckCollisionPointRec(mouse, button);
@@ -191,14 +197,22 @@ void App::draw_level_select() const
         const std::string level_text =
             "Level " + std::to_string(i + 1);
 
+        constexpr int font_size = 24;
+
         const int text_width =
-            MeasureText(level_text.c_str(), 20);
+            MeasureText(level_text.c_str(), font_size);
 
         DrawText(
             level_text.c_str(),
-            x + (button_width - text_width) / 2,
-            y + 12,
-            20,
+            static_cast<int>(
+                button.x +
+                (button.width - text_width) / 2.0f
+                ),
+            static_cast<int>(
+                button.y +
+                (button.height - font_size) / 2.0f
+                ),
+            font_size,
             RAYWHITE
         );
     }
@@ -208,22 +222,36 @@ void App::draw_level_select() const
 
 Rectangle App::get_level_button_rect(std::size_t i) const
 {
-    constexpr int columns = 5;
-    constexpr int button_width = 90;
-    constexpr int button_height = 70;
-    constexpr int gap_x = 15;
-    constexpr int gap_y = 20;
-    constexpr int start_x = 40;
-    constexpr int start_y = 110;
+    constexpr int columns = 4;
 
-    const int row = static_cast<int>(i) / columns;
-    const int column = static_cast<int>(i) % columns;
+    constexpr int button_width = 150;
+    constexpr int button_height = 90;
+
+    constexpr int gap_x = 20;
+    constexpr int gap_y = 20;
+
+    constexpr int start_y = 130;
+
+    const int grid_width =
+        columns * button_width +
+        (columns - 1) * gap_x;
+
+    const int start_x =
+        (screenWidth - grid_width) / 2;
+
+    const int row =
+        static_cast<int>(i) / columns;
+
+    const int column =
+        static_cast<int>(i) % columns;
 
     const int x =
-        start_x + column * (button_width + gap_x);
+        start_x +
+        column * (button_width + gap_x);
 
     const int y =
-        start_y + row * (button_height + gap_y);
+        start_y +
+        row * (button_height + gap_y);
 
     return Rectangle{
         static_cast<float>(x),
