@@ -52,14 +52,6 @@ public:
 private:
     void create_board();
     bool has_matches_in_area_of(Position first, Position second) const;
-    std::vector<Position> breadth_first_search(Position start, Tile wish_tile) const; //поиск в ширину
-    void bf_search_check_cell(
-        std::unordered_set<Position, PositionHash>& already_checked,
-        std::vector<Position>& need_to_check,
-        std::vector<Position>& result,
-        Position& pos_to_check,
-        Tile& wish_tile
-    ) const;
 
     [[nodiscard]] std::size_t index(std::size_t x, std::size_t y) const;
     [[nodiscard]] Tile randomTile();

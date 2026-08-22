@@ -148,7 +148,7 @@ bool Board::try_swap(Position first, Position second) {
 }
 
 std::vector<Position> Board::find_matches() const {
-    std::vector<std::vector<Position>> groups_of_cells_to_delete;
+    std::unordered_set<Position, PositionHash> unic_cells_to_delete;
     
     //Сначала ищем 3 в ряд в вертикально, то есть в столбце
     for (int x = 0; x < width_; x++) {
@@ -160,9 +160,14 @@ std::vector<Position> Board::find_matches() const {
             if (tile == last_tile) {
                 counter++;
                 if (counter == 3) {
-                    //делаем поиск в ширину
-                    groups_of_cells_to_delete.push_back(breadth_first_search({ x,y }, tile));
-
+                    //запишем текущую и 2 предыдущие
+                    unic_cells_to_delete.insert({x,y});
+                    unic_cells_to_delete.insert({x,y-1});
+                    unic_cells_to_delete.insert({x,y-2});
+                }
+                if (counter > 3) {
+                    //запишем текущую
+                    unic_cells_to_delete.insert({ x,y });
                 }
             }
             else {
@@ -183,8 +188,14 @@ std::vector<Position> Board::find_matches() const {
             if (tile == last_tile) {
                 counter++;
                 if (counter == 3) {
-                    //делаем поиск в ширину
-                    groups_of_cells_to_delete.push_back(breadth_first_search({ x,y }, tile));
+                    //запишем текущую и 2 предыдущие
+                    unic_cells_to_delete.insert({ x,y });
+                    unic_cells_to_delete.insert({ x-1,y });
+                    unic_cells_to_delete.insert({ x-2,y});
+                }
+                if (counter > 3) {
+                    //запишем текущую
+                    unic_cells_to_delete.insert({ x,y });
                 }
             }
             else {
@@ -196,77 +207,19 @@ std::vector<Position> Board::find_matches() const {
     }
     
     //получаем уникальные клетки
-    std::unordered_set<Position, PositionHash> unic_cells_to_delete;
-    for (auto& group : groups_of_cells_to_delete) {
-        for (auto& pos : group) {
-            unic_cells_to_delete.insert(pos);
-        }
-    }
+    
+
     
     std::vector<Position>cells_to_delete;
-    //записываем уникальные клетки
+    //записываем уникальные клетки в вектор
     for (auto it = unic_cells_to_delete.begin(); it != unic_cells_to_delete.end(); ++it) {
         cells_to_delete.push_back(*it);
     }
     return cells_to_delete;
+
 }
 
-//поиск в ширину
-std::vector<Position> Board::breadth_first_search(Position start, Tile wish_tile) const {
-    std::unordered_set<Position, PositionHash> already_checked;
-    std::vector<Position> need_to_check;
-    std::vector<Position> result;
-    need_to_check.push_back(start);
-    
-    while (!need_to_check.empty()) {
-        //извлекаем
-        Position current_pos = need_to_check.back();
-        need_to_check.pop_back();
 
-
-        Position pos_to_check = current_pos;
-        pos_to_check.x += 1;
-        bf_search_check_cell(already_checked, need_to_check, result, pos_to_check, wish_tile);
-
-        if (current_pos.x > 0) {
-            pos_to_check = current_pos;
-            pos_to_check.x -= 1;
-            bf_search_check_cell(already_checked, need_to_check, result, pos_to_check, wish_tile);
-        }
-
-
-        pos_to_check = current_pos;
-        pos_to_check.y += 1;
-        bf_search_check_cell(already_checked, need_to_check, result, pos_to_check, wish_tile);
-
-        if (current_pos.y > 0) {
-            pos_to_check = current_pos;
-            pos_to_check.y -= 1;
-            bf_search_check_cell(already_checked, need_to_check, result, pos_to_check, wish_tile);
-        }
-    }
-    return result;
-}
-
-void Board::bf_search_check_cell(
-    std::unordered_set<Position, PositionHash>& already_checked,
-    std::vector<Position>& need_to_check,
-    std::vector<Position>& result,
-    Position& pos_to_check,
-    Tile& wish_tile
-) const {
-    if (contains(pos_to_check)) {
-        //проверим, вдруг проверяли
-        if (already_checked.count(pos_to_check) == 0) {
-            Tile tile = at(pos_to_check);
-            if (tile == wish_tile) {
-                result.push_back(pos_to_check);
-                need_to_check.push_back(pos_to_check);
-            }
-            already_checked.insert(pos_to_check);
-        }
-    }
-}
 
 bool Board::has_possible_moves(){
     for (std::size_t y = 0; y < height_; y++) {
