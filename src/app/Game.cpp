@@ -35,7 +35,7 @@ Game::Game(LevelConfig level_config, int screenWidth, int screenHeight)
     : level_config{ level_config },
     screenWidth{ screenWidth },
     screenHeight{ screenHeight },
-    board_{ (std::size_t)level_config.width, (std::size_t)level_config.height, level_config.colors_count, 42 }
+    board_{ (std::size_t)level_config.width, (std::size_t)level_config.height, level_config.colors_count, level_config.map, 42 }
 {
 
     std::cout << "Game created" << std::endl;

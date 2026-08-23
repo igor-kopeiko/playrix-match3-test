@@ -53,6 +53,8 @@ struct LevelGoal {
     int amount;
 };
 
+using InitialCell = std::optional<Tile>;
+
 struct LevelConfig {
     int id;
     std::string name;
@@ -63,6 +65,8 @@ struct LevelConfig {
     int moves;
 
     std::vector<LevelGoal> goals;
+
+    std::vector<std::vector<InitialCell>> map;
 };
 
 

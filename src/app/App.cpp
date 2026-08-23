@@ -6,6 +6,33 @@ using json = nlohmann::json;
 
 
 namespace match3 {
+
+namespace {
+
+std::optional<Tile> tile_from_string(const std::string& value)
+{
+    if (value == "Red") return Tile::Red;
+    if (value == "Green") return Tile::Green;
+    if (value == "Blue") return Tile::Blue;
+    if (value == "Yellow") return Tile::Yellow;
+    if (value == "Purple") return Tile::Purple;
+    if (value == "Orange") return Tile::Orange;
+    if (value == "Cyan") return Tile::Cyan;
+    if (value == "GrayLight") return Tile::GrayLight;
+    if (value == "GrayMedium") return Tile::GrayMedium;
+    if (value == "GrayDark") return Tile::GrayDark;
+
+    return std::nullopt;
+}
+
+}// namespace
+
+
+
+
+
+
+
 App::App(int screenWidth, int screenHeight)
     : screenWidth{ screenWidth },
     screenHeight{ screenHeight }
@@ -312,6 +339,66 @@ LevelConfig App::load_level_cfg_file(std::string path) {
         level.height = data["height"].get<int>();
         level.colors_count = data["colors"].get<int>();
         level.moves = data["moves"].get<int>();
+        //--------------------------
+
+        if (data.contains("map")) {
+            const auto& map_data = data["map"];
+
+            if (!map_data.is_array()) {
+                throw std::runtime_error("Level map must be an array");
+            }
+
+            if (map_data.size() != static_cast<std::size_t>(level.height)) {
+                throw std::runtime_error(
+                    "Level map height does not match level height"
+                );
+            }
+
+            level.map.resize(level.height);
+
+            for (int y = 0; y < level.height; ++y) {
+                const auto& row = map_data[y];
+
+                if (!row.is_array()) {
+                    throw std::runtime_error(
+                        "Level map row must be an array"
+                    );
+                }
+
+                if (row.size() != static_cast<std::size_t>(level.width)) {
+                    throw std::runtime_error(
+                        "Level map width does not match level width"
+                    );
+                }
+
+                level.map[y].resize(level.width);
+
+                for (int x = 0; x < level.width; ++x) {
+                    const std::string value =
+                        row[x].get<std::string>();
+
+                    if (value == "Random") {
+                        level.map[y][x] = std::nullopt;
+                        continue;
+                    }
+
+                    const auto tile =
+                        tile_from_string(value);
+
+                    if (!tile) {
+                        throw std::runtime_error(
+                            "Unknown tile in level map: " + value
+                        );
+                    }
+
+                    level.map[y][x] = tile.value();
+                }
+            }
+        }
+
+
+
+        //---------------------------
 
         for (const auto& goal_data : data["goals"]) {
             if (!goal_data.is_object()) {
@@ -326,43 +413,28 @@ LevelConfig App::load_level_cfg_file(std::string path) {
             }
 
             LevelGoal goal;
-            const std::string color = goal_data["color"].get<std::string>();
-            goal.amount = goal_data["amount"].get<int>();
 
-            if (color == "Red") {
-                goal.color = Tile::Red;
-            }
-            else if (color == "Green") {
-                goal.color = Tile::Green;
-            }
-            else if (color == "Blue") {
-                goal.color = Tile::Blue;
-            }
-            else if (color == "Yellow") {
-                goal.color = Tile::Yellow;
-            }
-            else if (color == "Purple") {
-                goal.color = Tile::Purple;
-            }
-            else if (color == "Orange") {
-                goal.color = Tile::Orange;
-            }
-            else if (color == "Cyan") {
-                goal.color = Tile::Cyan;
-            }
-            else if (color == "GrayLight") {
-                goal.color = Tile::GrayLight;
-            }
-            else if (color == "GrayMedium") {
-                goal.color = Tile::GrayMedium;
-            }
-            else if (color == "GrayDark") {
-                goal.color = Tile::GrayDark;
-            }
-            else {
-                std::cerr << "Unknown goal color '" << color << "' in " << path << std::endl;
+            const std::string color =
+                goal_data["color"].get<std::string>();
+
+            goal.amount =
+                goal_data["amount"].get<int>();
+
+            const std::optional<Tile> tile =
+                tile_from_string(color);
+
+            if (!tile) {
+                std::cerr
+                    << "Unknown goal color '"
+                    << color
+                    << "' in "
+                    << path
+                    << std::endl;
+
                 continue;
             }
+
+            goal.color = tile.value();
 
             level.goals.push_back(goal);
         }

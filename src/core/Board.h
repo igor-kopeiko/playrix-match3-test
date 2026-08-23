@@ -10,6 +10,7 @@
 #include <vector>
 #include <unordered_set>
 #include <algorithm>
+#include <optional>
 
 namespace match3 {
 
@@ -22,6 +23,14 @@ struct FallMove {
 class Board {
 public:
     Board(std::size_t width, std::size_t height, int color_amount, std::uint32_t seed = std::random_device{}());
+
+    Board(
+        std::size_t width,
+        std::size_t height,
+        int color_amount,
+        const std::vector<std::vector<std::optional<Tile>>>& initial_map,
+        std::uint32_t seed = std::random_device{}()
+    );
 
     [[nodiscard]] std::size_t width() const noexcept { return width_; }
     [[nodiscard]] std::size_t height() const noexcept { return height_; }
@@ -51,6 +60,13 @@ public:
 
 private:
     void create_board();
+
+    void create_board(
+        const std::vector<std::vector<std::optional<Tile>>>& initial_map
+    );
+
+
+
     bool has_matches_in_area_of(Position first, Position second) const;
 
     [[nodiscard]] std::size_t index(std::size_t x, std::size_t y) const;

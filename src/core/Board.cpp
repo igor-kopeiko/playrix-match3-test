@@ -56,6 +56,99 @@ void Board::create_board() {
     }
 }
 
+Board::Board(
+    const std::size_t width,
+    const std::size_t height,
+    int color_amount,
+    const std::vector<std::vector<std::optional<Tile>>>& initial_map,
+    const std::uint32_t seed
+)
+    : width_(width),
+    height_(height),
+    tiles_(width* height),
+    rng_(seed),
+    color_amount{ color_amount }
+{
+    if (width == 0 || height == 0) {
+        throw std::invalid_argument(
+            "Board dimensions must be greater than zero"
+        );
+    }
+
+    for (auto& tile : tiles_) {
+        tile = Tile::Default;
+    }
+
+    if (initial_map.empty()) {
+        create_board();
+    }
+    else {
+        create_board(initial_map);
+    }
+
+    std::cout << "Board created" << std::endl;
+}
+
+
+void Board::create_board(
+    const std::vector<std::vector<std::optional<Tile>>>& initial_map
+)
+{
+    for (std::size_t y = 0; y < height_; ++y) {
+        for (std::size_t x = 0; x < width_; ++x) {
+
+            // Фиксированная клетка из JSON
+            if (initial_map[y][x].has_value()) {
+                set(x, y, initial_map[y][x].value());
+                continue;
+            }
+
+            // Random-клетка
+            while (true) {
+                const Tile new_tile = randomTile();
+
+                // Не создаём 3 одинаковых по горизонтали
+                if (
+                    x >= 2 &&
+                    at(x - 1, y) == new_tile &&
+                    at(x - 2, y) == new_tile
+                    ) {
+                    continue;
+                }
+
+                // Не создаём 3 одинаковых по вертикали
+                if (
+                    y >= 2 &&
+                    at(x, y - 1) == new_tile &&
+                    at(x, y - 2) == new_tile
+                    ) {
+                    continue;
+                }
+
+                set(x, y, new_tile);
+                break;
+            }
+        }
+    }
+
+    // Если фиксированные клетки сами образовали match —
+    // конфиг уровня некорректный
+    if (!find_matches().empty()) {
+        throw std::runtime_error(
+            "Initial level map contains a match"
+        );
+    }
+}
+
+
+
+
+
+
+
+
+
+
 Tile Board::at(const std::size_t x, const std::size_t y) const {
     if (x >= width_ || y >= height_) {
         throw std::out_of_range("Board coordinates are out of range");
