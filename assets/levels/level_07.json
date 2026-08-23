@@ -1,13 +1,13 @@
 {
   "id": 7,
-  "name": "Orange Rush",
+  "name": "Cyan Arrival",
   "width": 11,
   "height": 11,
-  "colors": 6,
-  "moves": 21,
+  "colors": 7,
+  "moves": 24,
   "goals": [
-    { "color": "Orange", "amount": 30 },
-    { "color": "Blue", "amount": 26 },
-    { "color": "Yellow", "amount": 26 }
+    { "color": "Cyan", "amount": 22 },
+    { "color": "Orange", "amount": 24 },
+    { "color": "Blue", "amount": 24 }
   ]
 }
