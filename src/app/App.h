@@ -35,6 +35,7 @@ public:
 private:
 	std::unique_ptr<Game> game_;
 	AppState state_ = AppState::LevelSelect;
+	std::size_t current_level_index_ = 0;
 
 
 

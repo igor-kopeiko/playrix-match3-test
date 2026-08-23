@@ -79,16 +79,41 @@ void App::tick() {
 		break;
 	}
 		
-	case AppState::Playing: {
-		game_->tick();
-        if (game_->requested_action() == match3::GameAction::ExitToMenu) {
+    case AppState::Playing: {
+        game_->tick();
+
+        const GameAction action =
+            game_->requested_action();
+
+        if (action == GameAction::ExitToMenu) {
             state_ = AppState::LevelSelect;
             game_.reset();
             return;
-            
         }
-		break;
-	}
+
+        if (action == GameAction::Retry) {
+            start_level(current_level_index_);
+            return;
+        }
+
+        if (action == GameAction::NextLevel) {
+            const std::size_t next_level =
+                current_level_index_ + 1;
+
+            if (next_level < levels_data.size()) {
+                start_level(next_level);
+            }
+            else {
+                // Последний уровень пройден.
+                state_ = AppState::LevelSelect;
+                game_.reset();
+            }
+
+            return;
+        }
+
+        break;
+    }
 	}
 	
 }
@@ -150,9 +175,14 @@ void App::update_level_select() {
 }
 
 void App::start_level(std::size_t i) {
+    current_level_index_ = i;
 
+    game_ = std::make_unique<Game>(
+        levels_data[i],
+        screenWidth,
+        screenHeight
+    );
 
-    game_ = std::make_unique<Game>(levels_data[i], screenWidth, screenHeight);
     state_ = AppState::Playing;
 }
 

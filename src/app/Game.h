@@ -102,6 +102,8 @@ private:
     bool check_game_over();
 
     Rectangle get_exit_button_rect() const;
+    Rectangle get_retry_button_rect() const;
+    Rectangle get_next_level_button_rect() const;
 
 
     void draw() const;

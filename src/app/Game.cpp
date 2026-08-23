@@ -295,27 +295,82 @@ void Game::update_shuffling() {
 }
 
 void Game::update_game_over() {
-    
-    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-        const Vector2 mouse = GetMousePosition();
-
-        if (CheckCollisionPointRec(mouse, get_exit_button_rect())) {
-            game_action_ = GameAction::ExitToMenu;
-        }
+    if (!IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        return;
     }
 
+    const Vector2 mouse = GetMousePosition();
 
+    if (CheckCollisionPointRec(mouse, get_retry_button_rect())) {
+        game_action_ = GameAction::Retry;
+        return;
+    }
+
+    if (CheckCollisionPointRec(mouse, get_exit_button_rect())) {
+        game_action_ = GameAction::ExitToMenu;
+        return;
+    }
+
+    if (CheckCollisionPointRec(mouse, get_next_level_button_rect())) {
+        game_action_ = GameAction::NextLevel;
+        return;
+    }
+}
+
+Rectangle Game::get_retry_button_rect() const {
+    constexpr float button_width = 150.0f;
+    constexpr float button_height = 45.0f;
+    constexpr float gap = 12.0f;
+
+    const float total_width =
+        button_width * 3.0f + gap * 2.0f;
+
+    const float start_x =
+        (screenWidth - total_width) / 2.0f;
+
+    return Rectangle{
+        start_x,
+        screenHeight / 2.0f + 40.0f,
+        button_width,
+        button_height
+    };
 }
 
 Rectangle Game::get_exit_button_rect() const {
-    constexpr float width = 180.0f;
-    constexpr float height = 45.0f;
+    constexpr float button_width = 150.0f;
+    constexpr float button_height = 45.0f;
+    constexpr float gap = 12.0f;
+
+    const float total_width =
+        button_width * 3.0f + gap * 2.0f;
+
+    const float start_x =
+        (screenWidth - total_width) / 2.0f;
 
     return Rectangle{
-        (screenWidth - width) / 2.0f,
+        start_x + button_width + gap,
         screenHeight / 2.0f + 40.0f,
-        width,
-        height
+        button_width,
+        button_height
+    };
+}
+
+Rectangle Game::get_next_level_button_rect() const {
+    constexpr float button_width = 150.0f;
+    constexpr float button_height = 45.0f;
+    constexpr float gap = 12.0f;
+
+    const float total_width =
+        button_width * 3.0f + gap * 2.0f;
+
+    const float start_x =
+        (screenWidth - total_width) / 2.0f;
+
+    return Rectangle{
+        start_x + (button_width + gap) * 2.0f,
+        screenHeight / 2.0f + 40.0f,
+        button_width,
+        button_height
     };
 }
 
@@ -576,7 +631,7 @@ void Game::draw_game_over() const
     );
 
     // Основная панель
-    constexpr float panel_width = 320.0f;
+    constexpr float panel_width = 520.0f;
     constexpr float panel_height = 220.0f;
 
     const float panel_x =
@@ -633,73 +688,79 @@ void Game::draw_game_over() const
         RAYWHITE
     );
 
-
     // -------------------------
-    // Кнопка Level select
+    // Кнопки
     // -------------------------
-
-    const Rectangle button = get_exit_button_rect();
 
     const Vector2 mouse = GetMousePosition();
 
-    const bool hovered =
-        CheckCollisionPointRec(mouse, button);
-
-    Color button_color{
-        55, 62, 80, 255
+    const std::array<Rectangle, 3> buttons{
+        get_retry_button_rect(),
+        get_exit_button_rect(),
+        get_next_level_button_rect()
     };
 
-    if (hovered) {
-        button_color = Color{
-            75, 85, 110, 255
+    const std::array<const char*, 3> button_texts{
+        "Try again",
+        "Level select",
+        "Next level"
+    };
+
+    constexpr int button_font_size = 18;
+
+    for (std::size_t i = 0; i < buttons.size(); ++i) {
+        const Rectangle& button = buttons[i];
+
+        const bool hovered =
+            CheckCollisionPointRec(mouse, button);
+
+        Color button_color{
+            55, 62, 80, 255
         };
+
+        if (hovered) {
+            button_color = Color{
+                75, 85, 110, 255
+            };
+        }
+
+        DrawRectangleRounded(
+            button,
+            0.2f,
+            8,
+            button_color
+        );
+
+        DrawRectangleRoundedLines(
+            button,
+            0.2f,
+            8,
+            RAYWHITE
+        );
+
+        const int text_width =
+            MeasureText(button_texts[i], button_font_size);
+
+        const int text_x =
+            static_cast<int>(
+                button.x +
+                (button.width - text_width) / 2.0f
+                );
+
+        const int text_y =
+            static_cast<int>(
+                button.y +
+                (button.height - button_font_size) / 2.0f
+                );
+
+        DrawText(
+            button_texts[i],
+            text_x,
+            text_y,
+            button_font_size,
+            RAYWHITE
+        );
     }
-
-    DrawRectangleRounded(
-        button,
-        0.2f,
-        8,
-        button_color
-    );
-
-    DrawRectangleRoundedLines(
-        button,
-        0.2f,
-        8,
-        RAYWHITE
-    );
-
-
-    // -------------------------
-    // Текст кнопки
-    // -------------------------
-
-    const char* button_text = "Level select";
-
-    constexpr int button_font_size = 20;
-
-    const int button_text_width =
-        MeasureText(button_text, button_font_size);
-
-    const int button_text_x =
-        static_cast<int>(
-            button.x +
-            (button.width - button_text_width) / 2.0f
-            );
-
-    const int button_text_y =
-        static_cast<int>(
-            button.y +
-            (button.height - button_font_size) / 2.0f
-            );
-
-    DrawText(
-        button_text,
-        button_text_x,
-        button_text_y,
-        button_font_size,
-        RAYWHITE
-    );
 }
 
 
