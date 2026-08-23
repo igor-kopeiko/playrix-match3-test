@@ -1,13 +1,13 @@
 {
   "id": 6,
-  "name": "Wide Board",
+  "name": "Six Colors",
   "width": 11,
   "height": 10,
-  "colors": 5,
-  "moves": 20,
+  "colors": 6,
+  "moves": 21,
   "goals": [
-    { "color": "Red", "amount": 28 },
-    { "color": "Green", "amount": 28 },
-    { "color": "Purple", "amount": 24 }
+    { "color": "Orange", "amount": 24 },
+    { "color": "Red", "amount": 26 },
+    { "color": "Green", "amount": 26 }
   ]
 }
