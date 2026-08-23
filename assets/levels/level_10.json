@@ -1,16 +1,14 @@
 {
   "id": 10,
-  "name": "Final Mix",
+  "name": "Gray Mix",
   "width": 14,
   "height": 14,
-  "colors": 6,
-  "moves": 26,
+  "colors": 8,
+  "moves": 32,
   "goals": [
+    { "color": "GrayLight", "amount": 28 },
+    { "color": "Cyan", "amount": 28 },
     { "color": "Red", "amount": 26 },
-    { "color": "Green", "amount": 26 },
-    { "color": "Blue", "amount": 26 },
-    { "color": "Yellow", "amount": 26 },
-    { "color": "Purple", "amount": 22 },
-    { "color": "Orange", "amount": 22 }
+    { "color": "Blue", "amount": 26 }
   ]
 }
