@@ -44,15 +44,6 @@ Game::Game(LevelConfig level_config, int screenWidth, int screenHeight)
     animation_duration.removing = 0.2;
     animation_duration.fall_speed_pix_pro_sec = 500.0;
 
-    //===================================
-    //kBoardOffsetX = 44; //отступ первой ячейки от края
-    //kBoardOffsetY = 64;
-
-    //kCellSize_x = (screenWidth - kBoardOffsetX * 2) / level_config.width;
-
-    //kCellSize_y = (screenHeight - kBoardOffsetY * 2) / level_config.height;
-    //space_near_cell = 4; //то же самое что расстояние между клетками/2
-    //===================================
     constexpr int vertical_margin = 64;
     constexpr int horizontal_margin = 44;
 
@@ -348,13 +339,11 @@ void Game::draw() const {
 
             switch (current_game_state) {
             case GameState::Idle:
-                //DrawText("State: Idle", kBoardOffsetX, 28, 24, RAYWHITE);
                 //обычный показ доски
                 draw_regular_cell(x, y);
                 break;
 
             case GameState::Swapping:
-                //("State: Swapping", kBoardOffsetX, 28, 24, RAYWHITE);
                 if (swapping_poses.first.x == x && swapping_poses.first.y == y) {
                     draw_swapping_cell(x, y);
                 }
@@ -366,7 +355,6 @@ void Game::draw() const {
                 }
                 break;
             case GameState::BackSwapping:
-                //DrawText("State: BackSwapping", kBoardOffsetX, 28, 24, RAYWHITE);
                 if (swapping_poses.first.x == x && swapping_poses.first.y == y) {
                     draw_swapping_cell(x, y);
                 }
@@ -379,7 +367,6 @@ void Game::draw() const {
                 break;
 
             case GameState::Removing: {
-                //DrawText("State: Removing", kBoardOffsetX, 28, 24, RAYWHITE);
                 bool need_to_remove = false;
                 for (auto& cell : cells_to_remove) {
                     if (cell.x == x && cell.y == y) {
@@ -395,7 +382,6 @@ void Game::draw() const {
                 break;
             }
             case GameState::Falling: {
-                //DrawText("State: Falling", kBoardOffsetX, 28, 24, RAYWHITE);
                 bool is_falling = false;
                 for (auto& cell : falling_cells) {
                     if (cell.to.x == x && cell.to.y == y) {
@@ -409,8 +395,7 @@ void Game::draw() const {
                 break;
             }
             case GameState::Checking:
-                //DrawText("State: Filling", kBoardOffsetX, 28, 24, RAYWHITE);
-                draw_regular_cell(x, y);//DEBAG 
+                draw_regular_cell(x, y);
                 break;
 
             case GameState::GameOver:
