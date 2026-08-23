@@ -468,7 +468,7 @@ std::vector<FallMove> Board::collapse_cells() {
                 found_empty = true;
             }
             else {
-                if (found_empty) {
+                if (found_empty && curr_cell != Tile::Default) {
                     FallMove fall;
                     fall.tile = curr_cell;
                     fall.from = { x, y };
@@ -477,8 +477,9 @@ std::vector<FallMove> Board::collapse_cells() {
 
                     set(x, current_empty_y, curr_cell);
                     set(x, y, Tile::Default);
+
                     //ищем следующую пустую клетку
-                    for (int empty_y = current_empty_y; empty_y >= 0;  empty_y--) {
+                    for (int empty_y = current_empty_y; empty_y >= 0; empty_y--) {
                         if (at(x, empty_y) == Tile::Default) {
                             current_empty_y = empty_y;
                             break;
