@@ -5,6 +5,16 @@
   "height": 8,
   "colors": 4,
   "moves": 12,
+  "map": [
+    ["Red", "Green", "Blue", "Yellow", "Red", "Green", "Blue", "Yellow"],
+    ["Green", "Blue", "Yellow", "Red", "Green", "Blue", "Yellow", "Red"],
+    ["Blue", "Yellow", "Random", "Green", "Blue", "Yellow", "Red", "Green"],
+    ["Yellow", "Red", "Green", "Blue", "Yellow", "Red", "Green", "Blue"],
+    ["Red", "Green", "Blue", "Yellow", "Random", "Green", "Blue", "Yellow"],
+    ["Green", "Blue", "Yellow", "Red", "Green", "Blue", "Yellow", "Red"],
+    ["Blue", "Yellow", "Red", "Green", "Blue", "Yellow", "Random", "Green"],
+    ["Yellow", "Red", "Green", "Blue", "Yellow", "Red", "Green", "Blue"]
+  ],
   "goals": [
     { "color": "Red", "amount": 15 },
     { "color": "Blue", "amount": 12 }
