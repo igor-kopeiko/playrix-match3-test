@@ -347,6 +347,18 @@ LevelConfig App::load_level_cfg_file(std::string path) {
             else if (color == "Orange") {
                 goal.color = Tile::Orange;
             }
+            else if (color == "Cyan") {
+                goal.color = Tile::Cyan;
+            }
+            else if (color == "GrayLight") {
+                goal.color = Tile::GrayLight;
+            }
+            else if (color == "GrayMedium") {
+                goal.color = Tile::GrayMedium;
+            }
+            else if (color == "GrayDark") {
+                goal.color = Tile::GrayDark;
+            }
             else {
                 std::cerr << "Unknown goal color '" << color << "' in " << path << std::endl;
                 continue;

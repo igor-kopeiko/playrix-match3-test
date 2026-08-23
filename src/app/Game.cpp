@@ -19,6 +19,11 @@ Color colorForTile(const Tile tile) {
         Color{245, 205, 65, 255},
         Color{160, 90, 220, 255},
         Color{245, 145, 55, 255},
+
+        Color{50, 210, 230, 255}, // Cyan
+        Color{190, 190, 190, 255},// GrayLight
+        Color{120, 120, 120, 255},// GrayMedium
+        Color{65, 65, 70, 255},   // GrayDark
     };
     return colors.at(static_cast<std::size_t>(tile));
 }
@@ -39,10 +44,6 @@ Game::Game(LevelConfig level_config, int screenWidth, int screenHeight)
     animation_duration.removing = 0.2;
     animation_duration.fall_speed_pix_pro_sec = 500.0;
 
-    //Game сам вычисляет :
-    //    -cell_size
-    //    - board_offset_x
-    //    - board_offset_y
     //===================================
     //kBoardOffsetX = 44; //отступ первой ячейки от края
     //kBoardOffsetY = 64;
@@ -109,6 +110,18 @@ Game::Game(LevelConfig level_config, int screenWidth, int screenHeight)
 
     tile_textures_[static_cast<std::size_t>(Tile::Orange)] =
         LoadTexture((tiles_path + "orange_60.png").c_str());
+
+    tile_textures_[static_cast<std::size_t>(Tile::Cyan)] =
+        LoadTexture((tiles_path + "cyan_60.png").c_str());
+
+    tile_textures_[static_cast<std::size_t>(Tile::GrayLight)] =
+        LoadTexture((tiles_path + "gray_light_60.png").c_str());
+
+    tile_textures_[static_cast<std::size_t>(Tile::GrayMedium)] =
+        LoadTexture((tiles_path + "gray_medium_60.png").c_str());
+
+    tile_textures_[static_cast<std::size_t>(Tile::GrayDark)] =
+        LoadTexture((tiles_path + "gray_dark_60.png").c_str());
 }
 
 
