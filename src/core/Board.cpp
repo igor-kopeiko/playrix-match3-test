@@ -69,20 +69,45 @@ Board::Board(
     rng_(seed),
     color_amount{ color_amount }
 {
+    // Проверяем размеры самой доски
     if (width == 0 || height == 0) {
         throw std::invalid_argument(
             "Board dimensions must be greater than zero"
         );
     }
 
+    // Если карта была передана, проверяем её размеры
+    if (!initial_map.empty()) {
+
+        // Количество строк должно совпадать с высотой доски
+        if (initial_map.size() != height_) {
+            throw std::invalid_argument(
+                "Initial map height does not match board height"
+            );
+        }
+
+        // В каждой строке должно быть ровно width_ клеток
+        for (const auto& row : initial_map) {
+            if (row.size() != width_) {
+                throw std::invalid_argument(
+                    "Initial map width does not match board width"
+                );
+            }
+        }
+    }
+
+    // Изначально заполняем доску пустыми клетками
     for (auto& tile : tiles_) {
         tile = Tile::Default;
     }
 
+    // Если map в JSON отсутствовал — используем
+    // старую полностью случайную генерацию
     if (initial_map.empty()) {
         create_board();
     }
     else {
+        // Если map присутствует — создаём доску по конфигу
         create_board(initial_map);
     }
 
