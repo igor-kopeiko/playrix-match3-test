@@ -143,9 +143,6 @@ private:
     int kCellSize_y;
     int space_near_cell; //то же самое что расстояние между клетками/2
 
-    //std::size_t cell_amount_x;
-    //std::size_t cell_amount_y;
-
     //вернет индексы выбранной клетки
     std::optional<Position> get_chosen_cell(Vector2 mouse);
 
@@ -153,8 +150,7 @@ private:
     void calculate_swapping_shift();
     
 
-    //LevelConfig level_{8, 8}; //пока оставим дефолт
-    Board board_;//{ cell_amount_x, cell_amount_y, 42 };
+    Board board_;
     
     std::optional<Position> first_selected_cell = std::nullopt;
 
