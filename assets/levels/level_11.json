@@ -1,14 +1,14 @@
 {
   "id": 11,
-  "name": "Color Hunt",
+  "name": "Medium Gray",
   "width": 15,
   "height": 15,
-  "colors": 6,
-  "moves": 27,
+  "colors": 9,
+  "moves": 36,
   "goals": [
-    { "color": "Red", "amount": 38 },
-    { "color": "Blue", "amount": 38 },
-    { "color": "Purple", "amount": 34 },
-    { "color": "Orange", "amount": 34 }
+    { "color": "GrayMedium", "amount": 26 },
+    { "color": "GrayLight", "amount": 26 },
+    { "color": "Cyan", "amount": 26 },
+    { "color": "Purple", "amount": 28 }
   ]
 }
