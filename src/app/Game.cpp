@@ -311,7 +311,10 @@ void Game::update_game_over() {
         return;
     }
 
-    if (CheckCollisionPointRec(mouse, get_next_level_button_rect())) {
+    if (
+        game_result_ == GameResult::Victory &&
+        CheckCollisionPointRec(mouse, get_next_level_button_rect())
+        ) {
         game_action_ = GameAction::NextLevel;
         return;
     }
@@ -711,14 +714,38 @@ void Game::draw_game_over() const
     for (std::size_t i = 0; i < buttons.size(); ++i) {
         const Rectangle& button = buttons[i];
 
+        // Третья кнопка — Next level.
+        const bool is_next_level_button = (i == 2);
+
+        const bool disabled =
+            is_next_level_button &&
+            game_result_ != GameResult::Victory;
+
         const bool hovered =
+            !disabled &&
             CheckCollisionPointRec(mouse, button);
 
         Color button_color{
             55, 62, 80, 255
         };
 
-        if (hovered) {
+        Color border_color = RAYWHITE;
+        Color text_color = RAYWHITE;
+
+        if (disabled) {
+            button_color = Color{
+                45, 48, 58, 255
+            };
+
+            border_color = Color{
+                100, 100, 110, 255
+            };
+
+            text_color = Color{
+                120, 120, 130, 255
+            };
+        }
+        else if (hovered) {
             button_color = Color{
                 75, 85, 110, 255
             };
@@ -735,7 +762,7 @@ void Game::draw_game_over() const
             button,
             0.2f,
             8,
-            RAYWHITE
+            border_color
         );
 
         const int text_width =
@@ -758,7 +785,7 @@ void Game::draw_game_over() const
             text_x,
             text_y,
             button_font_size,
-            RAYWHITE
+            text_color
         );
     }
 }
