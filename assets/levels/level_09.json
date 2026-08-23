@@ -1,13 +1,13 @@
 {
   "id": 9,
-  "name": "Big Board",
+  "name": "Light Gray",
   "width": 13,
   "height": 13,
-  "colors": 6,
-  "moves": 24,
+  "colors": 8,
+  "moves": 29,
   "goals": [
-    { "color": "Red", "amount": 36 },
-    { "color": "Yellow", "amount": 32 },
-    { "color": "Orange", "amount": 32 }
+    { "color": "GrayLight", "amount": 24 },
+    { "color": "Cyan", "amount": 24 },
+    { "color": "Yellow", "amount": 28 }
   ]
 }
