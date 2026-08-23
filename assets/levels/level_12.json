@@ -3,14 +3,13 @@
   "name": "Grand Finale",
   "width": 16,
   "height": 16,
-  "colors": 6,
-  "moves": 28,
+  "colors": 10,
+  "moves": 42,
   "goals": [
-    { "color": "Red", "amount": 32 },
-    { "color": "Green", "amount": 32 },
-    { "color": "Blue", "amount": 32 },
-    { "color": "Yellow", "amount": 32 },
-    { "color": "Purple", "amount": 30 },
-    { "color": "Orange", "amount": 30 }
+    { "color": "GrayDark", "amount": 26 },
+    { "color": "GrayMedium", "amount": 26 },
+    { "color": "GrayLight", "amount": 26 },
+    { "color": "Cyan", "amount": 26 },
+    { "color": "Orange", "amount": 28 }
   ]
 }
